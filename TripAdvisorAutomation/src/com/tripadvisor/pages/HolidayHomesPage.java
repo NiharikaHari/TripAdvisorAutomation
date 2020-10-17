@@ -8,7 +8,7 @@ public class HolidayHomesPage {
 	
 	//Locator for: Check Prices
 	//Locator for: check in
-	//Locator for: check in date
+	//Locator for: check in date //div[@class='_3ULdV0X_ ' or @class='_3ULdV0X_ _3EgHgIoQ' or @class='_3ULdV0X_ _1p3ofNUI']
 	//Locator for: check out
 	//Locator for: check out date
 	//Locator for: guests button
