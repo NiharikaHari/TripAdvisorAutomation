@@ -6,6 +6,7 @@ import com.aventstack.extentreports.ExtentTest;
 
 public class HolidayHomesPage {
 	
+	//blah blah haha
 	//Locator for: Check Prices
 	//Locator for: check in
 	//Locator for: check in date //div[@class='_3ULdV0X_ ' or @class='_3ULdV0X_ _3EgHgIoQ' or @class='_3ULdV0X_ _1p3ofNUI']
