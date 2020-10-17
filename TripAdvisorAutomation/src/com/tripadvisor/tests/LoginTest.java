@@ -16,44 +16,45 @@ import com.tripadvisor.utils.ExcelUtils;
 
 public class LoginTest extends BaseUI {
 
-	//TC 1 - Valid email and password
-	//TC 2 - Valid email, invalid password
-	//TC 3 - Invalid email, invalid password
-	//TC 4 - Leave email field empty
-	//TC 5 - Leave password field empty
-	
+	// TC 1 - Valid email and password
+	// TC 2 - Valid email, invalid password
+	// TC 3 - Invalid email, invalid password
+	// TC 4 - Leave email field empty
+	// TC 5 - Leave password field empty
+
 	private WebDriver driver;
-	
+
 	@BeforeClass
-	public void setUp(){
+	public void setUp() {
 		driver = invokeBrowser();
 		openBrowser("https://www.tripadvisor.in");
 	}
-	
-	@Test(dataProvider="loginData")
-	public void loginTest(String email, String password, String comment){
-		logger = report.createTest("Login Test - "+comment);
+
+	@Test(dataProvider = "loginData")
+	public void loginTest(String email, String password, String comment) {
+		logger = report.createTest("Login Test - " + comment);
 		HomePage home = new HomePage(driver);
 		home.doSignIn(email, password);
 	}
-	
+
 	@DataProvider
-	public Object[][] loginData() throws IOException{
-		HashMap<String, ArrayList<String>> dataMap = ExcelUtils.readExcelData("LoginTest");
+	public Object[][] loginData() throws IOException {
+		HashMap<String, ArrayList<String>> dataMap = ExcelUtils
+				.readExcelData("LoginTest");
 		int size = dataMap.size();
 		Object[][] data = new Object[size][3];
-		for(int i=0;i<size;++i){
-			for(int j=0;j<3;++j){
-				data[i][j] = dataMap.get(""+(i+1)).get(j);
+		for (int i = 0; i < size; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				data[i][j] = dataMap.get("" + (i + 1)).get(j);
 			}
 		}
 		return data;
 	}
-	
+
 	@AfterClass
-	public void afterTest(){
+	public void afterTest() {
 		driver.quit();
 		report.flush();
 	}
-	
+
 }
