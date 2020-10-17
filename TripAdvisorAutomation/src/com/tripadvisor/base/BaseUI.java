@@ -112,9 +112,9 @@ public class BaseUI {
 	}
 
 	/************** Click on element with WebElement ****************/
-	public static void clickOn(By locator) {
+	public static void clickOn(By locator, int timeout) {
 		try {
-			new WebDriverWait(driver, 20).until(ExpectedConditions
+			new WebDriverWait(driver, timeout).until(ExpectedConditions
 					.elementToBeClickable(locator));
 			driver.findElement(locator).click();
 			reportPass("Element successfully clicked: " + locator);

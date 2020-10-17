@@ -4,8 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.tripadvisor.base.BaseUI;
 
-public class HolidayHomesPage {
+public class HolidayHomesPage extends BaseUI {
 
 	// Locator for: Check Prices
 	By show_price = By.xpath("//button[@class='ui_button original fullwidth']");
