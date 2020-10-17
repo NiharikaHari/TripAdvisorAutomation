@@ -11,7 +11,7 @@ public class HomePage extends BaseUI{
 	//for login
 	By sign_in_btn = By.xpath("//a[@class='_1JOGv2rJ _1_M9wxW9 _1qMtXLO6 _3yBiBka1']");
 	By iframe = By.xpath("//iframe[@class='_30pzQStV']");
-	By sign_in_email = By.xpath("//span[@class='ui_button w100p regEmailContinue newRegFormButtonStyles']");
+	By sign_in_email = By.xpath("//span[contains(text(),'Continue with email')]");
 	By email_textbox = By.id("regSignIn.email");
 	By pwd_textbox = By.id("regSignIn.password");
 	By log_in_btn = By.xpath("//*[@id='regSignIn']/div[2]");
