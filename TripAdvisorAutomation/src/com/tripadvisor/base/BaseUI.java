@@ -84,6 +84,25 @@ public class BaseUI {
 
 	}
 
+	/************** Get list of web elements ****************/	
+	public static List<WebElement> getListOfElements(By locator){
+		List<WebElement> list = null;
+		WebDriverWait wait = new WebDriverWait(driver, 20);
+		wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+		list = driver.findElements(locator);
+		return list;
+	}
+	
+	public static boolean isElementPresent(By locator, int timeout){
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, timeout);
+			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 	/************** Send text to an element ****************/
 	public static void sendText(By locator, String text) {
 		try {
@@ -125,13 +144,14 @@ public class BaseUI {
 	}
 
 	/************** Click on element with Actions ****************/
-	public static void clickAction(By locator) {
+	public static void clickAction(By locator, int timeout) {
 		try {
-			new WebDriverWait(driver, 20).until(ExpectedConditions
+			new WebDriverWait(driver, timeout).until(ExpectedConditions
 					.elementToBeClickable(locator));
 			Actions action = new Actions(driver);
-			action.moveToElement(driver.findElement(locator)).click().build()
-					.perform();
+			action.moveToElement(driver.findElement(locator)).build().perform();
+			action.moveByOffset(0, 10).build().perform();
+			action.click(driver.findElement(locator)).build().perform();
 			reportPass("Element successfully clicked: " + locator);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -140,9 +160,9 @@ public class BaseUI {
 	}
 
 	/************** Click on element with JavaScript ****************/
-	public static void clickJS(By locator) {
+	public static void clickJS(By locator, int timeout) {
 		try {
-			new WebDriverWait(driver, 20).until(ExpectedConditions
+			new WebDriverWait(driver, timeout).until(ExpectedConditions
 					.elementToBeClickable(locator));
 			JavascriptExecutor jse = (JavascriptExecutor) driver;
 			jse.executeScript("arguments[0].click", driver.findElement(locator));

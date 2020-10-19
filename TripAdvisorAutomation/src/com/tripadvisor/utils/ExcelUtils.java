@@ -51,4 +51,24 @@ public class ExcelUtils {
 		return data;
 	}
 
+	public static void writeExcel(String[] data, String sheetName, String heading){
+		//create workbook
+		//create sheet name is sheetName
+		//write "heading" to first row first cell
+		//write array values to the first column, starting from the second cell
+		//autoresize
+		//write to an excel file using fileoutputstream etc, name the excel file "Output1.xlsx"
+		
+	}
+	
+	public static void writeExcel(String[][] data, String sheetName, String headings[]){
+		//create workbook
+		//create sheet name is sheetName
+		//write all "headings" to first row
+		//write array values to the respective columns, starting from the second row
+		//autoresize
+		//write to an excel file using fileoutputstream etc, name the excel file "Output2.xlsx"
+		
+	}
+	
 }

@@ -35,8 +35,7 @@ public class HolidayHomesTest extends BaseUI {
 
 	/******** TC1 - Verify the whole scenario for all valid options ********/
 	// Whole scenario
-	// @Test(dataProvider = "holidayHomesData", dependsOnMethods =
-	// "invalidLocationTest")
+	@Test(dataProvider = "holidayHomesData", dependsOnMethods = "invalidLocationTest")
 	public void holidayHomesTest(String location) {
 		logger = report.createTest("Holiday Homes Test - " + location);
 		HomePage homePage = new HomePage(driver, logger);
@@ -70,7 +69,7 @@ public class HolidayHomesTest extends BaseUI {
 
 	/******** TC2 - Verify message on entering non-existent location ********/
 	// Run this test first
-	// @Test
+	@Test
 	public void invalidLocationTest() {
 		logger = report.createTest("Holiday Homes Test - Invalid location");
 		HomePage homePage = new HomePage(driver, logger);
@@ -89,7 +88,7 @@ public class HolidayHomesTest extends BaseUI {
 
 	/******** TC3 - Verify “Clear All Filters” functionality ********/
 	// Run this test at the end
-	// @Test(dependsOnMethods = "holidayHomesTest")
+	@Test(dependsOnMethods = "holidayHomesTest")
 	public void clearAllFiltersTest() {
 		logger = report.createTest("Clear All Filters Test");
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);

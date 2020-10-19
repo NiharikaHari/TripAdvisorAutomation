@@ -16,6 +16,7 @@ public class HolidayHomesPage extends BaseUI {
 	By check_out = By.xpath("//div[@class='_1rZK5NGr']");
 	By check_in_out_date_future = By.xpath("//div[@class='_3ULdV0X_ ']");
 	By check_in_out_date_past = By.xpath("//div[@class='_3ULdV0X_ _3EgHgIoQ']");
+	By month_year = By.xpath("//div[@class='_2DSA78he']/div[1]/div[1]");
 	By guest_button = By
 			.xpath("//body/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]");
 	By guest_number = By
@@ -29,7 +30,7 @@ public class HolidayHomesPage extends BaseUI {
 	By elevator = By
 			.xpath("//div[@class='_3x5FiS7r']//div//div[8]//div[1]//label[1]");
 	By sort_dropdown = By
-			.xpath("//body/div[2]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]");
+			.xpath("//div[@class='_1wuPwxoN']");
 	By traveller_rating = By
 			.xpath("//span[contains(text(),'Traveller Rating')]");
 	By hotel_name = By.xpath("//a[@class='_2K0y-IXo']");
@@ -61,6 +62,10 @@ public class HolidayHomesPage extends BaseUI {
 		// TODO: Set check in date to above date - "chech_in_out_date"
 		// first check if the month on top is correct, then select based on the
 		// date value
+		if(!isElementPresent(check_in_out_date_future, 1))
+			clickOn(check_in, 20);
+		List<WebElement> dates = getListOfElements(check_in_out_date_future);
+		dates.get(0).click();
 	}
 
 	public void setCheckOut(String[] dateMonth) {
@@ -70,15 +75,19 @@ public class HolidayHomesPage extends BaseUI {
 		// TODO: Set check out date to above date - "chech_in_out_date"
 		// first check if the month on top is correct, then select based on the
 		// date value
+		if(!isElementPresent(check_in_out_date_future, 1))
+			clickOn(check_out, 20);
+		List<WebElement> dates = getListOfElements(check_in_out_date_future);
+		dates.get(4).click();
 	}
 
 	public void setGuests() {
 		clickOn(guest_button, 20);
 		String num;
 		for (int i = 0; i < 4; i++) {
-			num = getText(guest_number);
-			int guest_num = Integer.parseInt(num.substring(0));
-			if (guest_num < 5) {
+			num = driver.findElement(guest_number).getAttribute("value");
+			int guest_num = Integer.parseInt(num.substring(0,1));
+			if (guest_num < 4) {
 				clickOn(guest_add, 20);
 			} else {
 				break;
@@ -88,16 +97,17 @@ public class HolidayHomesPage extends BaseUI {
 	}
 
 	public void sortByRating() {
-		clickOn(sort_dropdown, 20);
-		clickOn(traveller_rating, 20);
+		clickAction(sort_dropdown, 10);
+		clickOn(traveller_rating, 10);
 	}
 
 	public void selectLift() {
+		clickOn(more_amenities, 20);
 		clickOn(elevator, 20);
 	}
 
 	public String[] getHotelNames() {
-		List<WebElement> hotel_elements = driver.findElements(hotel_name);
+		List<WebElement> hotel_elements = getListOfElements(hotel_name);
 		String[] hotel_names = new String[5];
 		for (int i = 0; i < 5; i++) {
 			WebElement hotel_element = hotel_elements.get(i);
@@ -107,21 +117,21 @@ public class HolidayHomesPage extends BaseUI {
 	}
 
 	public String[] getTotalPrices() {
-		List<WebElement> total_price_elements = driver.findElements(total_price);
+		List<WebElement> total_price_elements = getListOfElements(total_price);
 		String[] total_price = new String[5];
 		for (int i = 0; i < 5; i++) {
 			WebElement total_price_element = total_price_elements.get(i);
-			total_price[i] = total_price_element.getText();
+			total_price[i] = total_price_element.getText().substring(2);
 		}
 		return total_price;
 	}
 
 	public String[] getPerNightPrices() {
-		List<WebElement> perNight_price_elements = driver.findElements(price_per_night);
+		List<WebElement> perNight_price_elements = getListOfElements(price_per_night);
 		String[] night_price = new String[5];
 		for (int i = 0; i < 5; i++) {
 			WebElement night_price_element = perNight_price_elements.get(i);
-			night_price[i] = night_price_element.getText();
+			night_price[i] = night_price_element.getText().substring(2);
 		}
 		return night_price;
 	}
