@@ -30,6 +30,7 @@ public class CruisesPage {
 		// TODO: Click on cruise dropdown
 		// TODO: Get List<WebElement> of elements in options
 		// TODO: Click on the fourth option by using .get() on above list
+		// Australis, Ventus Australis
 		// TODO: Click on search button
 	}
 

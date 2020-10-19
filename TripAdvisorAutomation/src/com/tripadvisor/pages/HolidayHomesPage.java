@@ -1,56 +1,41 @@
 package com.tripadvisor.pages;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.tripadvisor.base.BaseUI;
 
 public class HolidayHomesPage extends BaseUI {
 
-	// Locator for: Check Prices
 	By show_price = By.xpath("//button[@class='ui_button original fullwidth']");
-	// Locator for: check in
 	By check_in = By.xpath("//div[@class='lRYY2wxe']");
-	// Locator for: check out
 	By check_out = By.xpath("//div[@class='_1rZK5NGr']");
-	// Locator for: check out date
-	// Locator for: check in date
 	By check_in_out_date_future = By.xpath("//div[@class='_3ULdV0X_ ']");
 	By check_in_out_date_past = By.xpath("//div[@class='_3ULdV0X_ _3EgHgIoQ']");
-	// Locator for: guests button
 	By guest_button = By
 			.xpath("//body/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]");
-	// Locator for: no of guests
 	By guest_number = By
 			.xpath("//div[@class='zGG8H0c4']//div//div[2]//div[1]//div[2]//input[1]");
-	// Locator for: guests number add button
 	By guest_add = By
 			.xpath("//div[@class='zGG8H0c4']//div//div[2]//div[1]//div[2]//span[2]//span[1]");
-	// Locator for: guests apply button
 	By apply_button = By.xpath("//button[contains(text(),'Apply')]");
-	// Locator for: clear all filters button
 	By clear_filter = By.xpath("//div[contains(text(),'Clear all filters')]");
-	// Locator for: Show more amenities
+	By applied_filters = By.xpath("//div[@class='_3Hv8ck3T']/following-sibling::*");
 	By more_amenities = By.xpath("//div[@class='_3PlsTJV5']//div[12]//div[6]");
-	// Locator for: Elevator/Lift access checkbox in Amenities
 	By elevator = By
 			.xpath("//div[@class='_3x5FiS7r']//div//div[8]//div[1]//label[1]");
-	// Locator for: Sort By dropdown
 	By sort_dropdown = By
 			.xpath("//body/div[2]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]");
-	// Locator for: Traveller Rating option in sort by dropdown
 	By traveller_rating = By
 			.xpath("//span[contains(text(),'Traveller Rating')]");
-	// Locator for: common hotel name xpath
 	By hotel_name = By.xpath("//a[@class='_2K0y-IXo']");
-	// Locator for: common total price xpath
 	By total_price = By.xpath("//div[@class='_3f9mHAKH']");
-	// Locator for: common price per night xpath
 	By price_per_night = By.xpath("//div[@class='_33TIi_t4']");
-	// Locator for: Book Now button
 	By book_now = By.xpath("//button[@class='ui_button original fullwidth']");
-	// Locator for: Cruises Button
 	By cruises = By.xpath("//span[contains(text(),'Cruises')]");
 
 	public ExtentTest logger;
@@ -88,46 +73,75 @@ public class HolidayHomesPage extends BaseUI {
 	}
 
 	public void setGuests() {
-		// TODO: Click on "guest_button"
-		// TODO: get "guest_number" text
-		// TODO: Keep clicking "guest_add" until "guest_number" text is equal to 4+
-		// TODO: click "apply_button"
+		clickOn(guest_button, 20);
+		String num;
+		for (int i = 0; i < 4; i++) {
+			num = getText(guest_number);
+			int guest_num = Integer.parseInt(num.substring(0));
+			if (guest_num < 5) {
+				clickOn(guest_add, 20);
+			} else {
+				break;
+			}
+		}
+		clickOn(apply_button, 20);
 	}
 
 	public void sortByRating() {
-		// TODO: click sort by dropdown
-		// TODO: click traveller rating
+		clickOn(sort_dropdown, 20);
+		clickOn(traveller_rating, 20);
 	}
 
 	public void selectLift() {
-		// TODO: Click lift amenity checkbox
+		clickOn(elevator, 20);
 	}
 
 	public String[] getHotelNames() {
-		// TODO: Get List<WebElement> of hotel names
-		// TODO: Create a string array
-		// TODO: Store first five in a string array
-		// TODO: Return the array
-		return null;
+		List<WebElement> hotel_elements = driver.findElements(hotel_name);
+		String[] hotel_names = new String[5];
+		for (int i = 0; i < 5; i++) {
+			WebElement hotel_element = hotel_elements.get(i);
+			hotel_names[i] = hotel_element.getText();
+		}
+		return hotel_names;
 	}
 
 	public String[] getTotalPrices() {
-		// TODO: Get List<WebElement> of total price
-		// TODO: Create a string array
-		// TODO: Store first five in a string array
-		// TODO: Return the array
-		return null;
+		List<WebElement> total_price_elements = driver.findElements(total_price);
+		String[] total_price = new String[5];
+		for (int i = 0; i < 5; i++) {
+			WebElement total_price_element = total_price_elements.get(i);
+			total_price[i] = total_price_element.getText();
+		}
+		return total_price;
 	}
 
 	public String[] getPerNightPrices() {
-		// TODO: Get List<WebElement> of price per night
-		// TODO: Create a string array
-		// TODO: Store first five in a string array
-		// TODO: Return the array
-		return null;
+		List<WebElement> perNight_price_elements = driver.findElements(price_per_night);
+		String[] night_price = new String[5];
+		for (int i = 0; i < 5; i++) {
+			WebElement night_price_element = perNight_price_elements.get(i);
+			night_price[i] = night_price_element.getText();
+		}
+		return night_price;
 	}
 
 	public void clickCruise() {
-		// TODO: click on cruises button
+		clickOn(cruises, 20);
+	}
+
+	public void clickClearFilters(){
+		clickOn(clear_filter, 20);
+	}
+	
+	public boolean isFilterPresent(){
+		int noOfFilters = driver.findElements(applied_filters).size();
+		if(noOfFilters==0)
+			return false;
+		return true;
+	}
+	
+	public void clickBookNow(){
+		driver.findElement(book_now).click();
 	}
 }

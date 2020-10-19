@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import com.tripadvisor.base.BaseUI;
 import com.tripadvisor.pages.HolidayHomesPage;
 import com.tripadvisor.pages.HomePage;
+import com.tripadvisor.pages.HotelInfoPage;
 import com.tripadvisor.utils.DateUtils;
 import com.tripadvisor.utils.ExcelUtils;
 
@@ -33,7 +34,9 @@ public class HolidayHomesTest extends BaseUI {
 	}
 
 	/******** TC1 - Verify the whole scenario for all valid options ********/
-	//@Test(dataProvider = "holidayHomesData", dependsOnMethods = "invalidLocationTest")
+	// Whole scenario
+	// @Test(dataProvider = "holidayHomesData", dependsOnMethods =
+	// "invalidLocationTest")
 	public void holidayHomesTest(String location) {
 		logger = report.createTest("Holiday Homes Test - " + location);
 		HomePage homePage = new HomePage(driver, logger);
@@ -55,10 +58,19 @@ public class HolidayHomesTest extends BaseUI {
 			System.out.println("Total price: " + totalPrices[i]);
 			System.out.println("Price per night: " + perNightPrices[i]);
 		}
+		try {
+			Assert.assertEquals(hotelNames.length, 5);
+			Assert.assertEquals(totalPrices.length, 5);
+			Assert.assertEquals(perNightPrices.length, 5);
+			reportPass("Booking Holiday Homes Test Passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
 	}
 
 	/******** TC2 - Verify message on entering non-existent location ********/
-	//@Test
+	// Run this test first
+	// @Test
 	public void invalidLocationTest() {
 		logger = report.createTest("Holiday Homes Test - Invalid location");
 		HomePage homePage = new HomePage(driver, logger);
@@ -71,6 +83,71 @@ public class HolidayHomesTest extends BaseUI {
 					"Sorry, we couldn't find \"dummylocation\" worldwide");
 			reportPass("Invalid location message is correct");
 		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** TC3 - Verify “Clear All Filters” functionality ********/
+	// Run this test at the end
+	// @Test(dependsOnMethods = "holidayHomesTest")
+	public void clearAllFiltersTest() {
+		logger = report.createTest("Clear All Filters Test");
+		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
+		holidayHomesPage.clickClearFilters();
+		try {
+			Assert.assertFalse(holidayHomesPage.isFilterPresent());
+			reportPass("Clear all filters test passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** TC4 - Verify desired amenities are present for first result ********/
+	// @Test
+	// Run right after setting all filters
+	// second in group -> hotels info page tests
+	public void checkAmenitiesTest() {
+		logger = report.createTest("Check Amenities Test");
+		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
+		holidayHomesPage.clickBookNow();
+		ArrayList<String> tabs = new ArrayList<String>(
+				driver.getWindowHandles());
+		driver.switchTo().window(tabs.get(1));
+		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
+		boolean verifyCheckin = hotelPage.isCheckin(DateUtils.getCheckInDate());
+		boolean verifyCheckout = hotelPage.isCheckout(DateUtils
+				.getCheckOutDate());
+		boolean verifyElevator = hotelPage.isElevatorPresent();
+		driver.close();
+		driver.switchTo().window(tabs.get(0));
+		try {
+			Assert.assertTrue(verifyCheckin);
+			Assert.assertTrue(verifyCheckout);
+			Assert.assertTrue(verifyElevator);
+			reportPass("Check Amenities Test passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** TC5 - Verify “Book Now” button functionality on hotels page ********/
+	// @Test
+	// First in group -> hotels info page tests
+	public void verifyBookNowTest() {
+		logger = report.createTest("Verify Book Now Functionality Test");
+		try {
+			HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver,
+					logger);
+			holidayHomesPage.clickBookNow();
+			ArrayList<String> tabs = new ArrayList<String>(
+					driver.getWindowHandles());
+			driver.switchTo().window(tabs.get(1));
+			HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
+			hotelPage.takeScreenshot();
+			driver.close();
+			driver.switchTo().window(tabs.get(0));
+			reportPass("Verify Book Now Functionality Test Passed");
+		} catch (Exception e) {
 			reportFail(e.getMessage());
 		}
 	}
