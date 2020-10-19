@@ -25,7 +25,7 @@ public class HomePage extends BaseUI{
 	//for holiday homes
 	By holiday_homes_btn = By.xpath("//a[@title='Holiday Homes']");
 	By search_textbox = By.xpath("//div[@class='i3bZ_gBa _2RTs3_Ee _3TPJs5_m _3awdcWrG']//input[@placeholder='Where to?']");
-	By location_option_valid = By.xpath("//div[@class='_27pk-lCQ']/a"); 
+	By location_option_valid = By.xpath("//div[@class='HLvj7Lh5 nlBtua89' and contains(text(), 'Nairobi')]"); 
 	By location_option_invalid = By.xpath("//div[@class='HLvj7Lh5 nlBtua89' and contains(text(),'results')]");
 	
 	public ExtentTest logger;

@@ -1,37 +1,40 @@
 package com.tripadvisor.pages;
 
 import org.openqa.selenium.WebDriver;
-
+import java.util.List;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import com.aventstack.extentreports.ExtentTest;
 
+
 public class CruisesPage {
-
-	// cruises dropdown
-	// cruises options
-	// search button
-
 	public ExtentTest logger;
 	public WebDriver driver;
-
-	public CruisesPage() {
+	By dropdown=By.xpath("//*[@id='lithium-root']/main/nav/div/div/div[1]/a[9]/span)");
+	By ElementOption=By.xpath("//*[@id='cruise_line_dropdown'])");
+	By Search=By.xpath("//*[@id='component_1']/div/div[3]/div/div[3]/span/button)");
+	
+	public CruisesPage(){
 	}
-
-	public CruisesPage(WebDriver driver) {
+	
+	public CruisesPage(WebDriver driver){
 		this.driver = driver;
 	}
-
-	// Always use this constructor when initialising object of this page
-	public CruisesPage(WebDriver driver, ExtentTest logger) {
+	
+	//Always use this constructor when initialising object of this page
+	public CruisesPage(WebDriver driver, ExtentTest logger){
 		this.driver = driver;
 		this.logger = logger;
 	}
-
+	
 	public void searchCruise() {
-		// TODO: Click on cruise dropdown
-		// TODO: Get List<WebElement> of elements in options
-		// TODO: Click on the fourth option by using .get() on above list
-		// Australis, Ventus Australis
-		// TODO: Click on search button
+		
+		driver.findElement(dropdown).click();
+		List<WebElement> options=driver.findElements(ElementOption);
+		options.get(4).click();
+		driver.findElement(Search).click();
+
 	}
+	
 
 }
