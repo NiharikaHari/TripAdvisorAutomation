@@ -112,9 +112,9 @@ public class BaseUI {
 	}
 
 	/************** Click on element with WebElement ****************/
-	public static void clickOn(By locator) {
+	public static void clickOn(By locator, int timeout) {
 		try {
-			new WebDriverWait(driver, 20).until(ExpectedConditions
+			new WebDriverWait(driver, timeout).until(ExpectedConditions
 					.elementToBeClickable(locator));
 			driver.findElement(locator).click();
 			reportPass("Element successfully clicked: " + locator);
@@ -204,16 +204,24 @@ public class BaseUI {
 		});
 	}
 
-	/************** Take screenshot on test failure ****************/
-	public static void takeScreenShotOnFailure() {
+	/************** Take screenshot ****************/
+	public static void takeScreenShot(String filepath) {
 		TakesScreenshot takeScreenShot = (TakesScreenshot) driver;
 		File srcFile = takeScreenShot.getScreenshotAs(OutputType.FILE);
-		String imagePath = System.getProperty("user.dir")
-				+ "/failure-screenshots/" + DateUtils.getTimeStamp() + ".png";
-		File destFile = new File(imagePath);
+		File destFile = new File(filepath);
 		try {
 			FileUtils.copyFile(srcFile, destFile);
-			logger.addScreenCaptureFromPath(imagePath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/************** Take screenshot on test failure ****************/
+	public static void takeScreenShotOnFailure() {
+		String filepath = System.getProperty("user.dir")+"/failure-screenshots/" + DateUtils.getTimeStamp() + ".png";
+		takeScreenShot(filepath);
+		try {
+			logger.addScreenCaptureFromPath(filepath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

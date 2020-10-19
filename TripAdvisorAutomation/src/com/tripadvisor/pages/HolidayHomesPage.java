@@ -1,59 +1,147 @@
 package com.tripadvisor.pages;
 
+import java.util.List;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.tripadvisor.base.BaseUI;
 
-public class HolidayHomesPage {
-	
-	//Locator for: Check Prices
-	//Locator for: check in
-	//Locator for: check in date //div[@class='_3ULdV0X_ ' or @class='_3ULdV0X_ _3EgHgIoQ' or @class='_3ULdV0X_ _1p3ofNUI']
-	//Locator for: check out
-	//Locator for: check out date
-	//Locator for: guests button
-	//Locator for: guests number textbox
-	//Locator for: guests apply button
-	//Locator for: clear all filters button
-	//Locator for: Elevator/Lift access checkbox in Amenities
-	//Locator for: Sort By dropdown
-	//Locator for: Traveller Rating option in sort by dropdown
-	//Locator for: common hotel name xpath
-	//Locator for: common total price xpath
-	//Locator for: common price per night xpath
-	//Locator for: Book Now button
-	
-	
+public class HolidayHomesPage extends BaseUI {
+
+	By show_price = By.xpath("//button[@class='ui_button original fullwidth']");
+	By check_in = By.xpath("//div[@class='lRYY2wxe']");
+	By check_out = By.xpath("//div[@class='_1rZK5NGr']");
+	By check_in_out_date_future = By.xpath("//div[@class='_3ULdV0X_ ']");
+	By check_in_out_date_past = By.xpath("//div[@class='_3ULdV0X_ _3EgHgIoQ']");
+	By guest_button = By
+			.xpath("//body/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]");
+	By guest_number = By
+			.xpath("//div[@class='zGG8H0c4']//div//div[2]//div[1]//div[2]//input[1]");
+	By guest_add = By
+			.xpath("//div[@class='zGG8H0c4']//div//div[2]//div[1]//div[2]//span[2]//span[1]");
+	By apply_button = By.xpath("//button[contains(text(),'Apply')]");
+	By clear_filter = By.xpath("//div[contains(text(),'Clear all filters')]");
+	By applied_filters = By.xpath("//div[@class='_3Hv8ck3T']/following-sibling::*");
+	By more_amenities = By.xpath("//div[@class='_3PlsTJV5']//div[12]//div[6]");
+	By elevator = By
+			.xpath("//div[@class='_3x5FiS7r']//div//div[8]//div[1]//label[1]");
+	By sort_dropdown = By
+			.xpath("//body/div[2]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[2]/div[1]/div[2]/div[1]/div[1]/div[1]");
+	By traveller_rating = By
+			.xpath("//span[contains(text(),'Traveller Rating')]");
+	By hotel_name = By.xpath("//a[@class='_2K0y-IXo']");
+	By total_price = By.xpath("//div[@class='_3f9mHAKH']");
+	By price_per_night = By.xpath("//div[@class='_33TIi_t4']");
+	By book_now = By.xpath("//button[@class='ui_button original fullwidth']");
+	By cruises = By.xpath("//span[contains(text(),'Cruises')]");
+
 	public ExtentTest logger;
 	public WebDriver driver;
-	
-	public HolidayHomesPage(){
+
+	public HolidayHomesPage() {
 	}
-	
-	public HolidayHomesPage(WebDriver driver){
+
+	public HolidayHomesPage(WebDriver driver) {
 		this.driver = driver;
 	}
-	
-	//Always use this constructor when initialising object of this page
-	public HolidayHomesPage(WebDriver driver, ExtentTest logger){
+
+	// Always use this constructor when initialising object of this page
+	public HolidayHomesPage(WebDriver driver, ExtentTest logger) {
 		this.driver = driver;
 		this.logger = logger;
 	}
-	
-	public void setCheckIn(String[] dateMonth){
-		//dateMonth is a String array with two values, date and month, e.g. 16 Oct is {"16","10"}
-		//TODO: Click on check in tab
-		//TODO: Set check in date to above date
+
+	public void setCheckIn(String[] dateMonth) {
+		// dateMonth is a String array with two values, date and month, e.g. 16
+		// Oct is {"16","10"}
+		// TODO: Click on "check_in"
+		// TODO: Set check in date to above date - "chech_in_out_date"
+		// first check if the month on top is correct, then select based on the
+		// date value
+	}
+
+	public void setCheckOut(String[] dateMonth) {
+		// dateMonth is a String array with two values, date and month, e.g. 16
+		// Oct is {"16","10"}
+		// TODO: Click on "check_out"
+		// TODO: Set check out date to above date - "chech_in_out_date"
+		// first check if the month on top is correct, then select based on the
+		// date value
+	}
+
+	public void setGuests() {
+		clickOn(guest_button, 20);
+		String num;
+		for (int i = 0; i < 4; i++) {
+			num = getText(guest_number);
+			int guest_num = Integer.parseInt(num.substring(0));
+			if (guest_num < 5) {
+				clickOn(guest_add, 20);
+			} else {
+				break;
+			}
+		}
+		clickOn(apply_button, 20);
+	}
+
+	public void sortByRating() {
+		clickOn(sort_dropdown, 20);
+		clickOn(traveller_rating, 20);
+	}
+
+	public void selectLift() {
+		clickOn(elevator, 20);
+	}
+
+	public String[] getHotelNames() {
+		List<WebElement> hotel_elements = driver.findElements(hotel_name);
+		String[] hotel_names = new String[5];
+		for (int i = 0; i < 5; i++) {
+			WebElement hotel_element = hotel_elements.get(i);
+			hotel_names[i] = hotel_element.getText();
+		}
+		return hotel_names;
+	}
+
+	public String[] getTotalPrices() {
+		List<WebElement> total_price_elements = driver.findElements(total_price);
+		String[] total_price = new String[5];
+		for (int i = 0; i < 5; i++) {
+			WebElement total_price_element = total_price_elements.get(i);
+			total_price[i] = total_price_element.getText();
+		}
+		return total_price;
+	}
+
+	public String[] getPerNightPrices() {
+		List<WebElement> perNight_price_elements = driver.findElements(price_per_night);
+		String[] night_price = new String[5];
+		for (int i = 0; i < 5; i++) {
+			WebElement night_price_element = perNight_price_elements.get(i);
+			night_price[i] = night_price_element.getText();
+		}
+		return night_price;
+	}
+
+	public void clickCruise() {
+		clickOn(cruises, 20);
+	}
+
+	public void clickClearFilters(){
+		clickOn(clear_filter, 20);
 	}
 	
-	public void setCheckOut(String[] dateMonth){
-		//dateMonth is a String array with two values, date and month, e.g. 16 Oct is {"16","10"}
-		//TODO: Click on check out tab
-		//TODO: Set check out date to above date
+	public boolean isFilterPresent(){
+		int noOfFilters = driver.findElements(applied_filters).size();
+		if(noOfFilters==0)
+			return false;
+		return true;
 	}
 	
-	public void getGuests(int noOfGuests){
-		
+	public void clickBookNow(){
+		driver.findElement(book_now).click();
 	}
-	
 }

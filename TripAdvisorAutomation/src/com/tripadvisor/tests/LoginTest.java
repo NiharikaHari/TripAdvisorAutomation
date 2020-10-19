@@ -34,7 +34,19 @@ public class LoginTest extends BaseUI {
 	public void loginTest(String email, String password, String comment) {
 		logger = report.createTest("Login Test - " + comment);
 		HomePage home = new HomePage(driver);
+		if(email.equals("null"))
+			email="";
+		else if(password.equals("null"))
+			password="";
 		home.doSignIn(email, password);
+		if(comment.contains("Invalid")){
+			home.getInvalidMsg();
+		} else if(comment.contains("empty")){
+			home.getWarningMsg();
+		} else{
+			System.out.println("Valid creds test");
+		}
+		home.closeSignIn();
 	}
 
 	@DataProvider
