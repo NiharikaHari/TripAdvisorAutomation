@@ -3,6 +3,7 @@ package com.tripadvisor.base;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Function;
@@ -83,6 +84,19 @@ public class BaseUI {
 		}
 
 	}
+	
+	/************** Switch to new tab ****************/	
+	public static void switchToNewTab(){
+		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+		driver.switchTo().window(tabs.get(1));
+	}
+	
+	/************** Switch to prev tab ****************/	
+	public static void switchToPrevTab(){
+		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+		driver.close();
+		driver.switchTo().window(tabs.get(0));
+	}
 
 	/************** Get list of web elements ****************/	
 	public static List<WebElement> getListOfElements(By locator){
@@ -93,6 +107,7 @@ public class BaseUI {
 		return list;
 	}
 	
+	/************** Check if an element is present ****************/	
 	public static boolean isElementPresent(By locator, int timeout){
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, timeout);
@@ -165,6 +180,7 @@ public class BaseUI {
 			new WebDriverWait(driver, timeout).until(ExpectedConditions
 					.elementToBeClickable(locator));
 			JavascriptExecutor jse = (JavascriptExecutor) driver;
+			jse.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(locator));
 			jse.executeScript("arguments[0].click", driver.findElement(locator));
 			reportPass("Element successfully clicked: " + locator);
 		} catch (Exception e) {

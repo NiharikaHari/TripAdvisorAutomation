@@ -1,6 +1,9 @@
 package com.tripadvisor.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,27 +16,32 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelUtils {
 
+	private static FileInputStream read_file;
+	private static XSSFWorkbook workbook;
+	private static XSSFSheet worksheet;
+	private static Row row;
+	private static FileOutputStream write_file;
+	private static File file;
+
 	public static HashMap<String, ArrayList<String>> readExcelData(
 			String testName) throws IOException {
 		HashMap<String, ArrayList<String>> data = new HashMap<>();
 
-		FileInputStream readFile = new FileInputStream(
-				System.getProperty("user.dir")
-						+ "/resources/testdata/TestData.xlsx");
-		XSSFWorkbook workbook = new XSSFWorkbook(readFile);
-		XSSFSheet sheet = workbook.getSheet(testName);
-		Iterator<Row> rowIterator = sheet.iterator();
+		read_file = new FileInputStream(System.getProperty("user.dir")
+				+ "/resources/testdata/TestData.xlsx");
+		workbook = new XSSFWorkbook(read_file);
+		worksheet = workbook.getSheet(testName);
+		Iterator<Row> rowIterator = worksheet.iterator();
 
 		ArrayList<String> rowData = new ArrayList<>();
-		rowIterator = sheet.iterator();
+		rowIterator = worksheet.iterator();
 		int rowNum = 1;
-		Row row;
 		if (rowIterator.hasNext())
 			row = rowIterator.next();
 		while (rowIterator.hasNext()) {
 			row = rowIterator.next();
 			Iterator<Cell> cellIterator = row.iterator();
-			if(row.getCell(0)==null){
+			if (row.getCell(0) == null) {
 				break;
 			}
 			rowData = new ArrayList<>();
@@ -44,31 +52,70 @@ public class ExcelUtils {
 			data.put("" + (rowNum), rowData);
 			rowNum++;
 		}
-		
+
 		workbook.close();
-		readFile.close();
+		read_file.close();
 
 		return data;
 	}
 
-	public static void writeExcel(String[] data, String sheetName, String heading){
-		//create workbook
-		//create sheet name is sheetName
-		//write "heading" to first row first cell
-		//write array values to the first column, starting from the second cell
-		//autoresize
-		//write to an excel file using fileoutputstream etc, name the excel file "Output1.xlsx"
-		
+	public static void writeExcel(String[] data, String sheetName,
+			String heading) {
+
+		String[][] newData = new String[data.length][1];
+		String[] headings = new String[1];
+
+		headings[0] = heading;
+		for (int i = 0; i < data.length; ++i) {
+			newData[i][0] = data[i];
+		}
+
+		writeExcel(newData, sheetName, headings);
 	}
-	
-	public static void writeExcel(String[][] data, String sheetName, String headings[]){
-		//create workbook
-		//create sheet name is sheetName
-		//write all "headings" to first row
-		//write array values to the respective columns, starting from the second row
-		//autoresize
-		//write to an excel file using fileoutputstream etc, name the excel file "Output2.xlsx"
-		
+
+	public static void writeExcel(String[][] data, String sheetName,
+			String headings[]) {
+		String filePath = System.getProperty("user.dir")
+				+ "/Output.xlsx";
+		file = new File(filePath);
+		boolean fileExists = false;
+
+		try {
+			if (file.isFile()) {
+				read_file = new FileInputStream(file);
+				workbook = new XSSFWorkbook(read_file);
+				fileExists = true;
+			} else {
+				workbook = new XSSFWorkbook();
+			}
+
+			workbook = new XSSFWorkbook();
+			worksheet = workbook.createSheet(sheetName);
+			row = worksheet.createRow(0);
+			for (int i = 0; i < data[0].length; ++i) {
+				row.createCell(i).setCellValue(headings[i]);
+			}
+			for (int i = 0; i < data.length; ++i) {
+				row = worksheet.createRow(i+1);
+				for (int j = 0; j < data[0].length; ++j) {
+					row.createCell(j).setCellValue(data[i][j]);
+				}
+			}
+			for (int i = 0; i < data[0].length; ++i) {
+				worksheet.autoSizeColumn(i);
+			}
+
+			write_file = new FileOutputStream("Output.xlsx");
+			workbook.write(write_file);
+			write_file.close();
+			workbook.close();
+			if (fileExists)
+				read_file.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
-	
 }
