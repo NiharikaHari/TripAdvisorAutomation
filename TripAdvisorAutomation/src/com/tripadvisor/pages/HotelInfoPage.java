@@ -11,8 +11,8 @@ import com.tripadvisor.base.BaseUI;
 
 public class HotelInfoPage extends BaseUI {
 	
-	By checkin_date = By.xpath("//*[@id='component_2']/div/div/div[1]/div[1]/div[1]");
-	By checkout_date = By.xpath("//*[@id='component_2']/div/div/div[1]/div[1]/div[2]/div[1]");
+	By checkin_date = By.xpath("//div[@class='XkQt2l3o']/div[1]");
+	By checkout_date = By.xpath("//div[@class='XkQt2l3o']/div[2]");
 	By no_of_guests = By.xpath("//*[@id='component_2']/div/div/div[1]/div[1]/div[2]/div[2]");
 	By amenities = By.xpath("//div[contains(@class, '_3LYrovhe ')]");
 

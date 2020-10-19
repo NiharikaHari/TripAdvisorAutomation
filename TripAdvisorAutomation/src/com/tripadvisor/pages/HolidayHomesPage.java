@@ -16,6 +16,7 @@ public class HolidayHomesPage extends BaseUI {
 	By check_out = By.xpath("//div[@class='_1rZK5NGr']");
 	By check_in_out_date_future = By.xpath("//div[@class='_3ULdV0X_ ']");
 	By check_in_out_date_past = By.xpath("//div[@class='_3ULdV0X_ _3EgHgIoQ']");
+	By check_in_out_text = By.xpath("//div[@class='_1TRuMIKB']");
 	By month_year = By.xpath("//div[@class='_2DSA78he']/div[1]/div[1]");
 	By guest_button = By
 			.xpath("//body/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]");
@@ -49,7 +50,6 @@ public class HolidayHomesPage extends BaseUI {
 		this.driver = driver;
 	}
 
-	// Always use this constructor when initialising object of this page
 	public HolidayHomesPage(WebDriver driver, ExtentTest logger) {
 		this.driver = driver;
 		this.logger = logger;
@@ -121,7 +121,7 @@ public class HolidayHomesPage extends BaseUI {
 		String[] total_price = new String[5];
 		for (int i = 0; i < 5; i++) {
 			WebElement total_price_element = total_price_elements.get(i);
-			total_price[i] = total_price_element.getText().substring(2);
+			total_price[i] = total_price_element.getText();
 		}
 		return total_price;
 	}
@@ -131,7 +131,7 @@ public class HolidayHomesPage extends BaseUI {
 		String[] night_price = new String[5];
 		for (int i = 0; i < 5; i++) {
 			WebElement night_price_element = perNight_price_elements.get(i);
-			night_price[i] = night_price_element.getText().substring(2);
+			night_price[i] = night_price_element.getText();
 		}
 		return night_price;
 	}
@@ -152,6 +152,13 @@ public class HolidayHomesPage extends BaseUI {
 	}
 	
 	public void clickBookNow(){
-		driver.findElement(book_now).click();
+		clickAction(book_now, 10);
+	}
+	
+	public boolean isPastDateNotSelected(){
+		if(!isElementPresent(check_in_out_date_future, 1))
+			clickOn(check_in, 20);
+		clickOn(check_in_out_date_past, 10);
+		return isElementPresent(check_in_out_date_future, 1);
 	}
 }

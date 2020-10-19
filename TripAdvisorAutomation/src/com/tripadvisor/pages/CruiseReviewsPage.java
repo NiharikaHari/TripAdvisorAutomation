@@ -11,16 +11,11 @@ import com.tripadvisor.base.BaseUI;
 
 public class CruiseReviewsPage extends BaseUI {
 
-	// no of passengers
-	By noOfPassengers = By.xpath("//div[@class='_30ZCn9lR']//div[1]");
-	// no of crew
-	By noOfCrew = By.xpath("//div[@class='_30ZCn9lR']//div[1]//span");
-	// launch year
-	By launchYear = By.xpath("//div[@class='_30ZCn9lR']//div[4]");
-	//more button
+	By no_of_passengers = By.xpath("//div[@class='_30ZCn9lR']//div[1]");
+	By no_of_crew = By.xpath("//div[@class='_30ZCn9lR']//div[1]//span");
+	By launch_year = By.xpath("//div[@class='_30ZCn9lR']//div[4]");
 	By more = By.xpath("//span[contains(text(),'More')]");
-	// languages list
-	By languageList = By.xpath("//body/div[14]/div[1]/div[1]/ul[1]/li");
+	By language_list = By.xpath("//body/div[14]/div[1]/div[1]/ul[1]/li");
 
 	public ExtentTest logger;
 	public WebDriver driver;
@@ -32,44 +27,33 @@ public class CruiseReviewsPage extends BaseUI {
 		this.driver = driver;
 	}
 
-	// Always use this constructor when initialising object of this page
 	public CruiseReviewsPage(WebDriver driver, ExtentTest logger) {
 		this.driver = driver;
 		this.logger = logger;
 	}
 
 	public String[] getCruiseDetails() {
-		// TODO: get no of passengers text
-		String pass=getText(noOfPassengers);
+		String pass=getText(no_of_passengers);
 		String numPassengers=pass.substring(12, 19);
-		// TODO: get no of crew text
-		String crew=getText(noOfCrew);
+		String crew=getText(no_of_crew);
 		String numCrew=crew.substring(12);
-		// TODO: get launch year text
-		String year=getText(launchYear);
+		String year=getText(launch_year);
 		String launchYearDate=year.substring(10);
-		// TODO: store these tree values in string array
 		String[] arr = new String[3];
 		arr[0]=numPassengers;
 		arr[1]=numCrew;
 		arr[2]=launchYearDate;
-		// TODO: return the array
 		return arr;
 	}
 
 	public String[] getLanguagesList() {
-		// TODO: Get List<WebElement> using locator for languages list
-		// TODO: loop through above list and get text from each element
-		// TODO: store above values in a String array
-		// TODO: return array
 		clickOn(more,10);
-		List<WebElement> lang = driver.findElements(languageList);
+		List<WebElement> lang = driver.findElements(language_list);
 		String[] languages = new String[5];
 		for (int i = 0; i < lang.size()-1; i++) {
 			WebElement langua = lang.get(i+1);
 			languages[i] = langua.getText();
 		}
-		
 		return languages;
 	}
 
