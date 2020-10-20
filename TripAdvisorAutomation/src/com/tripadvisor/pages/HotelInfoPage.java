@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.tripadvisor.base.BaseUI;
 
 public class HotelInfoPage extends BaseUI {
@@ -35,31 +36,41 @@ public class HotelInfoPage extends BaseUI {
 	public boolean isCheckin(String[] dateMonth){
 		String checkin = driver.findElement(checkin_date).getText();
 		String[] date = checkin.split("/");
-		if(date[0].equals(dateMonth[0]) && date[1].equals(dateMonth[1]))
+		if(date[0].equals(dateMonth[0]) && date[1].equals(dateMonth[1])){
+			logger.log(Status.INFO, "CheckIn Date is correct");
 			return true;
+		}
+		reportFail("CheckIn Date is not correct");
 		return false;
 	}
 	
 	public boolean isCheckout(String[] dateMonth){
 		String checkout = driver.findElement(checkout_date).getText();
 		String[] date = checkout.split("/");
-		if(date[0].equals(dateMonth[0]) && date[1].equals(dateMonth[1]))
+		if(date[0].equals(dateMonth[0]) && date[1].equals(dateMonth[1])){
+			logger.log(Status.INFO, "CheckOut Date is correct");
 			return true;
+		}
+		reportFail("CheckOut Date is not correct");
 		return false;
 	}
 	
 	public boolean isElevatorPresent(){
 		List<WebElement> amenitiesList = driver.findElements(amenities);
 		for(WebElement amenity: amenitiesList){
-			if(amenity.getText().contains("Elevator"))
+			if(amenity.getText().contains("Elevator")){
+				logger.log(Status.INFO, "Elevator/Lift Facility is present");
 				return true;
+			}
 		}
+		reportFail("Elevator/Lift Facility is not present");
 		return false;
 	}
 	
 	public void takeScreenshot(){
 		String filepath = System.getProperty("user.dir")+"/screenshots/hotel_info_page.png";
 		takeScreenShot(filepath);
+		logger.log(Status.INFO, "Screenshot of hotel info page taken");
 	}
 	
 }

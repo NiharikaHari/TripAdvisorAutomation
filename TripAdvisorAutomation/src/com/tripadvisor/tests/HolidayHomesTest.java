@@ -123,9 +123,16 @@ public class HolidayHomesTest extends BaseUI {
 			reportFail(e.getMessage());
 		}
 	}
-
-	/******** Verify “Clear All Filters” functionality ********/
+	
+	/******** Verify choosing checkout date smaller than checkin date functionality ********/
 	@Test(dependsOnMethods = "checkAmenitiesTest")
+	public void earlyCheckoutDateTest(){
+		logger = report.createTest("Choose Checkout Before Checkin Test");
+		
+	}
+	
+	/******** Verify “Clear All Filters” functionality ********/
+	@Test(dependsOnMethods = "earlyCheckoutDateTest")
 	public void clearAllFiltersTest() {
 		logger = report.createTest("Clear All Filters Test");
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);

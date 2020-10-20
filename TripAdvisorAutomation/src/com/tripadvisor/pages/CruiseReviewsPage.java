@@ -15,7 +15,7 @@ public class CruiseReviewsPage extends BaseUI {
 	By no_of_crew = By.xpath("//div[@class='_30ZCn9lR']//div[1]//span");
 	By launch_year = By.xpath("//div[@class='_30ZCn9lR']//div[4]");
 	By more = By.xpath("//span[contains(text(),'More')]");
-	By language_list = By.xpath("//body/div[14]/div[1]/div[1]/ul[1]/li");
+	By language_list = By.xpath("//div[@class='_2yzvbm49']//ul[@class='_2lcHrbTn']//label");
 
 	public ExtentTest logger;
 	public WebDriver driver;
@@ -48,11 +48,11 @@ public class CruiseReviewsPage extends BaseUI {
 
 	public String[] getLanguagesList() {
 		clickOn(more,10);
-		List<WebElement> lang = driver.findElements(language_list);
+		List<WebElement> lang = getListOfElements(language_list);
 		String[] languages = new String[5];
 		for (int i = 0; i < lang.size()-1; i++) {
-			WebElement langua = lang.get(i+1);
-			languages[i] = langua.getText();
+			WebElement langEle = lang.get(i+1);
+			languages[i] = langEle.getText();
 		}
 		return languages;
 	}

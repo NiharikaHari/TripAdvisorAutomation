@@ -15,7 +15,7 @@ public class ExtentReportManager extends BaseUI {
 			report.attachReporter(htmlReporter);
 			report.setSystemInfo("OS", "Windows 10");
 			report.setSystemInfo("Build Version", "3.141.59");
-			htmlReporter.config().setDocumentTitle("Amazon automation results");
+			htmlReporter.config().setDocumentTitle("TripAdvisor automation results");
 			htmlReporter.config().setReportName("Add Items to Cart Test Report");
 			htmlReporter.config().setTimeStampFormat("MMM dd, yyyy HH:mm:ss");
 		}
