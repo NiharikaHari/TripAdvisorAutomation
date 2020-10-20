@@ -51,6 +51,7 @@ public class CruisesPage extends BaseUI{
 				break;
 			}
 		}
+		waitForDocumentReady(5);
 		clickOn(search_button, 10);
 
 	}
