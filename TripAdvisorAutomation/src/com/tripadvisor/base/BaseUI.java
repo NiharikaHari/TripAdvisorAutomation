@@ -165,7 +165,7 @@ public class BaseUI {
 					.elementToBeClickable(locator));
 			Actions action = new Actions(driver);
 			action.moveToElement(driver.findElement(locator)).build().perform();
-			action.moveByOffset(0, 10).build().perform();
+			//action.moveByOffset(0, 10).build().perform();
 			action.click(driver.findElement(locator)).build().perform();
 			reportPass("Element successfully clicked: " + locator);
 		} catch (Exception e) {

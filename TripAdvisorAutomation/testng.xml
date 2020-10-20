@@ -4,6 +4,7 @@
 	<test name="Test">
 		<classes>
 			<class name="com.tripadvisor.tests.HolidayHomesTest"></class>
+			<class name="com.tripadvisor.tests.CruisesTest"></class>
 		</classes>
 	</test>
 </suite>

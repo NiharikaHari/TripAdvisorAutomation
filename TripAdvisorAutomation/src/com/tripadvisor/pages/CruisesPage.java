@@ -33,12 +33,12 @@ public class CruisesPage extends BaseUI{
 		this.logger = logger;
 	}
 	
-	public void searchCruise() {
+	public void searchCruise(String cruiseLine, String cruiseShip) {
 		
 		clickOn(line_dropdown,10);
 		List<WebElement> line_options=getListOfElements(cruise_line_options);
 		for(WebElement option: line_options){
-			if(option.getText().contains("Norwegian")){
+			if(option.getText().contains(cruiseLine)){
 				option.click();
 				break;
 			}
@@ -46,11 +46,12 @@ public class CruisesPage extends BaseUI{
 		clickOn(ship_dropdown,10);
 		List<WebElement> ship_options=getListOfElements(cruise_ship_options);
 		for(WebElement option: ship_options){
-			if(option.getText().contains("Epic")){
+			if(option.getText().contains(cruiseShip)){
 				option.click();
 				break;
 			}
 		}
+		waitForDocumentReady(5);
 		clickOn(search_button, 10);
 
 	}

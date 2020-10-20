@@ -75,9 +75,9 @@ public class ExcelUtils {
 
 	public static void writeExcel(String[][] data, String sheetName,
 			String headings[]) {
-		String filePath = System.getProperty("user.dir")
-				+ "/Output.xlsx";
+		String filePath = System.getProperty("user.dir") + "/Output.xlsx";
 		file = new File(filePath);
+
 		boolean fileExists = false;
 
 		try {
@@ -88,15 +88,16 @@ public class ExcelUtils {
 			} else {
 				workbook = new XSSFWorkbook();
 			}
-
-			workbook = new XSSFWorkbook();
-			worksheet = workbook.createSheet(sheetName);
+			if(workbook.getSheet(sheetName)==null)
+				worksheet = workbook.createSheet(sheetName);
+			else
+				worksheet = workbook.getSheet(sheetName);
 			row = worksheet.createRow(0);
 			for (int i = 0; i < data[0].length; ++i) {
 				row.createCell(i).setCellValue(headings[i]);
 			}
 			for (int i = 0; i < data.length; ++i) {
-				row = worksheet.createRow(i+1);
+				row = worksheet.createRow(i + 1);
 				for (int j = 0; j < data[0].length; ++j) {
 					row.createCell(j).setCellValue(data[i][j]);
 				}
@@ -104,7 +105,6 @@ public class ExcelUtils {
 			for (int i = 0; i < data[0].length; ++i) {
 				worksheet.autoSizeColumn(i);
 			}
-
 			write_file = new FileOutputStream("Output.xlsx");
 			workbook.write(write_file);
 			write_file.close();
