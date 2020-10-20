@@ -1,18 +1,24 @@
 package com.tripadvisor.pages;
 
 import org.openqa.selenium.WebDriver;
+
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
 import com.aventstack.extentreports.ExtentTest;
+import com.tripadvisor.base.BaseUI;
 
 
-public class CruisesPage {
+public class CruisesPage extends BaseUI{
 	public ExtentTest logger;
 	public WebDriver driver;
-	By dropdown=By.xpath("//*[@id='lithium-root']/main/nav/div/div/div[1]/a[9]/span)");
-	By ElementOption=By.xpath("//*[@id='cruise_line_dropdown'])");
-	By Search=By.xpath("//*[@id='component_1']/div/div[3]/div/div[3]/span/button)");
+	By line_dropdown=By.id("cruise_line_dropdown");
+	By cruise_line_options=By.xpath("//div[@class='_16IExTAJ _1S9IhgUs _2QtYWK6H']/child::div");
+	By ship_dropdown = By.xpath("//div[@class='_1NO-LVmX']");
+	By cruise_ship_options = By.xpath("//div[@class='_16IExTAJ _1S9IhgUs _2QtYWK6H']/div");
+	By search_button=By.xpath("//button[@class='_1JOGv2rJ _1_M9wxW9 _32M3JNKp _3yBiBka1 _3fiJJkxX']");
 	
 	public CruisesPage(){
 	}
@@ -29,10 +35,23 @@ public class CruisesPage {
 	
 	public void searchCruise() {
 		
-		driver.findElement(dropdown).click();
-		List<WebElement> options=driver.findElements(ElementOption);
-		options.get(4).click();
-		driver.findElement(Search).click();
+		clickOn(line_dropdown,10);
+		List<WebElement> line_options=getListOfElements(cruise_line_options);
+		for(WebElement option: line_options){
+			if(option.getText().contains("Norwegian")){
+				option.click();
+				break;
+			}
+		}
+		clickOn(ship_dropdown,10);
+		List<WebElement> ship_options=getListOfElements(cruise_ship_options);
+		for(WebElement option: ship_options){
+			if(option.getText().contains("Epic")){
+				option.click();
+				break;
+			}
+		}
+		clickOn(search_button, 10);
 
 	}
 	
