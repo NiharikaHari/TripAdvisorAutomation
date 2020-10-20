@@ -1,8 +1,13 @@
 package com.tripadvisor.tests;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.tripadvisor.base.BaseUI;
@@ -25,8 +30,8 @@ public class CruisesTest extends BaseUI {
 		openBrowser("https://www.tripadvisor.in");
 	}
 	
-	@Test
-	public void TestCruise() {
+	@Test(dataProvider="cruiseData")
+	public void TestCruise(String cruiseLine, String cruiseShip) {
 		logger = report.createTest("Cruises Review Page Test");
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
@@ -36,7 +41,7 @@ public class CruisesTest extends BaseUI {
 		holidayHomesPage.clickCruise();
 		waitForDocumentReady(20);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
-		cruisesPage.searchCruise();
+		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 	
 		switchToNewTab();
 		
@@ -49,6 +54,22 @@ public class CruisesTest extends BaseUI {
 		ExcelUtils.writeExcel(data, "CruiseDetails", new String[]{"No of Passengers", "No of Crew", "Launch Year"});
 		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
 		ExcelUtils.writeExcel(cruiseLanguages, "CruiseLanguages", "Languages");
+	}
+	
+	@DataProvider
+	public Object[][] cruiseData() throws IOException {
+		HashMap<String, ArrayList<String>> dataMap = ExcelUtils
+				.readExcelData("CruisesTest");
+		int noRow = dataMap.size();
+		int noCol = dataMap.get("1").size();
+		Object[][] data = new Object[noRow][noCol];
+		for (int i = 0; i < noRow; ++i) {
+			ArrayList<String> rowData = dataMap.get("" + (i + 1));
+			for (int j = 0; j < noCol; ++j) {
+				data[i][j] = rowData.get(j);
+			}
+		}
+		return data;
 	}
 	
 	@AfterClass

@@ -5,7 +5,6 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
 import com.aventstack.extentreports.ExtentTest;
 import com.tripadvisor.base.BaseUI;
 
@@ -27,7 +26,7 @@ public class HolidayHomesPage extends BaseUI {
 	By apply_button = By.xpath("//button[contains(text(),'Apply')]");
 	By clear_filter = By.xpath("//div[contains(text(),'Clear all filters')]");
 	By applied_filters = By.xpath("//div[@class='_3Hv8ck3T']/following-sibling::*");
-	By more_amenities = By.xpath("//div[@class='_3PlsTJV5']//div[12]//div[6]");
+	By more_amenities = By.xpath("//div[contains(text(),'Amenities')]/following-sibling::*/span[1]");
 	By elevator = By
 			.xpath("//div[@class='_3x5FiS7r']//div//div[8]//div[1]//label[1]");
 	By sort_dropdown = By
@@ -103,7 +102,7 @@ public class HolidayHomesPage extends BaseUI {
 
 	public void selectLift() {
 		clickOn(more_amenities, 20);
-		clickOn(elevator, 20);
+		clickAction(elevator, 10);
 	}
 
 	public String[] getHotelNames() {
