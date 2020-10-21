@@ -5,7 +5,9 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.tripadvisor.base.BaseUI;
 
 public class HolidayHomesPage extends BaseUI {
@@ -65,6 +67,7 @@ public class HolidayHomesPage extends BaseUI {
 			clickOn(check_in, 20);
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
 		dates.get(0).click();
+		logger.log(Status.INFO, "CheckIn date is entered");
 	}
 
 	public void setCheckOut(String[] dateMonth) {
@@ -78,6 +81,7 @@ public class HolidayHomesPage extends BaseUI {
 			clickOn(check_out, 20);
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
 		dates.get(4).click();
+		logger.log(Status.INFO, "CheckOut date is entered");
 	}
 
 	public void setGuests() {
@@ -93,16 +97,19 @@ public class HolidayHomesPage extends BaseUI {
 			}
 		}
 		clickOn(apply_button, 20);
+		logger.log(Status.INFO, "Number of guests is set to 4+");
 	}
 
 	public void sortByRating() {
 		clickAction(sort_dropdown, 10);
 		clickOn(traveller_rating, 10);
+		logger.log(Status.INFO, "Sorted by Travellor Rating");
 	}
 
 	public void selectLift() {
 		clickOn(more_amenities, 20);
 		clickAction(elevator, 10);
+		logger.log(Status.INFO, "Selected Elevator/Lift Amenity");
 	}
 
 	public String[] getHotelNames() {
@@ -112,6 +119,7 @@ public class HolidayHomesPage extends BaseUI {
 			WebElement hotel_element = hotel_elements.get(i);
 			hotel_names[i] = hotel_element.getText();
 		}
+		logger.log(Status.INFO, "Obtained names of top 5 hotels");
 		return hotel_names;
 	}
 
@@ -122,6 +130,7 @@ public class HolidayHomesPage extends BaseUI {
 			WebElement total_price_element = total_price_elements.get(i);
 			total_price[i] = total_price_element.getText();
 		}
+		logger.log(Status.INFO, "Obtained total price of top 5 hotels");
 		return total_price;
 	}
 
@@ -132,15 +141,18 @@ public class HolidayHomesPage extends BaseUI {
 			WebElement night_price_element = perNight_price_elements.get(i);
 			night_price[i] = night_price_element.getText();
 		}
+		logger.log(Status.INFO, "Obtained price per night of top 5 hotels");
 		return night_price;
 	}
 
 	public void clickCruise() {
 		clickOn(cruises, 20);
+		logger.log(Status.INFO, "Clicked on 'Cruises' button");
 	}
 
 	public void clickClearFilters(){
 		clickOn(clear_filter, 20);
+		logger.log(Status.INFO, "Clicked on 'Clear Filters' button");
 	}
 	
 	public boolean isFilterPresent(){
@@ -152,12 +164,14 @@ public class HolidayHomesPage extends BaseUI {
 	
 	public void clickBookNow(){
 		clickAction(book_now, 10);
+		logger.log(Status.INFO, "Clicked on 'Book Now' button");
 	}
 	
 	public boolean isPastDateNotSelected(){
 		if(!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_in, 20);
 		clickOn(check_in_out_date_past, 10);
+		logger.log(Status.INFO, "Checked if past date was selected");
 		return isElementPresent(check_in_out_date_future, 1);
 	}
 }

@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.tripadvisor.base.BaseUI;
 
 public class HomePage extends BaseUI{
@@ -77,5 +78,6 @@ public class HomePage extends BaseUI{
 			clickOn(location_option_invalid, 20);
 		else
 			clickOn(location_option_valid, 20);
+		logger.log(Status.INFO, "Searched location for holiday homes");
 	}
 }

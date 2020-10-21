@@ -30,9 +30,9 @@ public class CruisesTest extends BaseUI {
 		openBrowser("https://www.tripadvisor.in");
 	}
 	
-	@Test(dataProvider="cruiseData")
-	public void TestCruise(String cruiseLine, String cruiseShip) {
-		logger = report.createTest("Cruises Review Page Test");
+	@Test(priority=1, dataProvider="cruiseData")
+	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
+		logger = report.createTest("Cruises Details Test");
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
 		waitForDocumentReady(20);
@@ -52,6 +52,12 @@ public class CruisesTest extends BaseUI {
 			data[0][i]=cruiseDetails[i];
 		}
 		ExcelUtils.writeExcel(data, "CruiseDetails", new String[]{"No of Passengers", "No of Crew", "Launch Year"});
+	}
+	
+	@Test(priority=2)
+	public void cruiseLanguagesTest(){
+		logger = report.createTest("Cruises Languages Test");
+		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver, logger);
 		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
 		ExcelUtils.writeExcel(cruiseLanguages, "CruiseLanguages", "Languages");
 	}
