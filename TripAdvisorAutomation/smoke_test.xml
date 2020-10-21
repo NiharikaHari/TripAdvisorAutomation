@@ -5,6 +5,7 @@
 		<classes>
 			<class name="com.tripadvisor.tests.HolidayHomesTest">
 				<methods>
+					<include name="invalidLocationTest" />
 					<include name="holidayHomesTest" />
 				</methods>
 			</class>
