@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -29,13 +30,19 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.tripadvisor.utils.DateUtils;
 import com.tripadvisor.utils.ExtentReportManager;
+import com.tripadvisor.utils.FileIO;
 
 public class BaseUI {
 
 	public static WebDriver driver;
-	public static ExtentReports report = ExtentReportManager
-			.getReportInstance();
+	public static ExtentReports report;
 	public static ExtentTest logger;
+	public static Properties prop;
+
+	public BaseUI() {
+		report = ExtentReportManager.getReportInstance();
+		prop = FileIO.initProperties();
+	}
 
 	/************** Invoke Browser ****************/
 	public static WebDriver invokeBrowser() {
@@ -84,31 +91,33 @@ public class BaseUI {
 		}
 
 	}
-	
-	/************** Switch to new tab ****************/	
-	public static void switchToNewTab(){
-		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+
+	/************** Switch to new tab ****************/
+	public static void switchToNewTab() {
+		ArrayList<String> tabs = new ArrayList<String>(
+				driver.getWindowHandles());
 		driver.switchTo().window(tabs.get(1));
 	}
-	
-	/************** Switch to prev tab ****************/	
-	public static void switchToPrevTab(){
-		ArrayList<String> tabs = new ArrayList<String>(driver.getWindowHandles());
+
+	/************** Switch to prev tab ****************/
+	public static void switchToPrevTab() {
+		ArrayList<String> tabs = new ArrayList<String>(
+				driver.getWindowHandles());
 		driver.close();
 		driver.switchTo().window(tabs.get(0));
 	}
 
-	/************** Get list of web elements ****************/	
-	public static List<WebElement> getListOfElements(By locator){
+	/************** Get list of web elements ****************/
+	public static List<WebElement> getListOfElements(By locator) {
 		List<WebElement> list = null;
 		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator));
 		list = driver.findElements(locator);
 		return list;
 	}
-	
-	/************** Check if an element is present ****************/	
-	public static boolean isElementPresent(By locator, int timeout){
+
+	/************** Check if an element is present ****************/
+	public static boolean isElementPresent(By locator, int timeout) {
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, timeout);
 			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
@@ -117,7 +126,7 @@ public class BaseUI {
 			return false;
 		}
 	}
-	
+
 	/************** Send text to an element ****************/
 	public static void sendText(By locator, String text) {
 		try {
@@ -165,7 +174,7 @@ public class BaseUI {
 					.elementToBeClickable(locator));
 			Actions action = new Actions(driver);
 			action.moveToElement(driver.findElement(locator)).build().perform();
-			//action.moveByOffset(0, 10).build().perform();
+			// action.moveByOffset(0, 10).build().perform();
 			action.click(driver.findElement(locator)).build().perform();
 			reportPass("Element successfully clicked: " + locator);
 		} catch (Exception e) {
@@ -180,7 +189,8 @@ public class BaseUI {
 			new WebDriverWait(driver, timeout).until(ExpectedConditions
 					.elementToBeClickable(locator));
 			JavascriptExecutor jse = (JavascriptExecutor) driver;
-			jse.executeScript("arguments[0].scrollIntoView(true);", driver.findElement(locator));
+			jse.executeScript("arguments[0].scrollIntoView(true);",
+					driver.findElement(locator));
 			jse.executeScript("arguments[0].click", driver.findElement(locator));
 			reportPass("Element successfully clicked: " + locator);
 		} catch (Exception e) {
@@ -240,6 +250,44 @@ public class BaseUI {
 		});
 	}
 
+	/**************** Get By locator using locator key ****************/
+	public static By getLocator(String locatorKey) {
+		if (locatorKey.endsWith("_id")) {
+			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
+			return By.id(prop.getProperty(locatorKey));
+		}
+		if (locatorKey.endsWith("_name")) {
+			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
+			return (By.name(prop.getProperty(locatorKey)));
+		}
+		if (locatorKey.endsWith("_className")) {
+			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
+			return (By.className(prop.getProperty(locatorKey)));
+		}
+		if (locatorKey.endsWith("_xpath")) {
+			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
+			return (By.xpath(prop.getProperty(locatorKey)));
+		}
+		if (locatorKey.endsWith("_css")) {
+			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
+			return (By.cssSelector(prop.getProperty(locatorKey)));
+		}
+		if (locatorKey.endsWith("_linkText")) {
+			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
+			return (By.linkText(prop.getProperty(locatorKey)));
+		}
+		if (locatorKey.endsWith("_partialLinkText")) {
+			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
+			return (By.partialLinkText(prop.getProperty(locatorKey)));
+		}
+		if (locatorKey.endsWith("_tagName")) {
+			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
+			return (By.tagName(prop.getProperty(locatorKey)));
+		}
+		reportFail("Failing test case, Invalid locator key: " + locatorKey);
+		return null;
+	}
+	
 	/************** Take screenshot ****************/
 	public static void takeScreenShot(String filepath) {
 		TakesScreenshot takeScreenShot = (TakesScreenshot) driver;
@@ -254,7 +302,8 @@ public class BaseUI {
 
 	/************** Take screenshot on test failure ****************/
 	public static void takeScreenShotOnFailure() {
-		String filepath = System.getProperty("user.dir")+"/failure-screenshots/" + DateUtils.getTimeStamp() + ".png";
+		String filepath = System.getProperty("user.dir")
+				+ "/failure-screenshots/" + DateUtils.getTimeStamp() + ".png";
 		takeScreenShot(filepath);
 		try {
 			logger.addScreenCaptureFromPath(filepath);

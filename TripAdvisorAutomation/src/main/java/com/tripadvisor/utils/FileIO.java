@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class ExcelUtils {
+public class FileIO {
 
 	private static FileInputStream read_file;
 	private static XSSFWorkbook workbook;
@@ -22,13 +23,31 @@ public class ExcelUtils {
 	private static Row row;
 	private static FileOutputStream write_file;
 	private static File file;
+	private static Properties prop;
 
+	/************** Get properties file ****************/
+	public static Properties initProperties() {
+		if (prop == null) {
+			prop = new Properties();
+			try {
+				FileInputStream file = new FileInputStream(
+						System.getProperty("user.dir")
+								+ "/src/test/resources/objectrepository/config.properties");
+				prop.load(file);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return prop;
+	}
+
+	/************** Get Test Data based on Test Name ****************/
 	public static HashMap<String, ArrayList<String>> readExcelData(
 			String testName) throws IOException {
 		HashMap<String, ArrayList<String>> data = new HashMap<>();
 
 		read_file = new FileInputStream(System.getProperty("user.dir")
-				+ "/resources/testdata/TestData.xlsx");
+				+ "/src/test/resources/testdata/TestData.xlsx");
 		workbook = new XSSFWorkbook(read_file);
 		worksheet = workbook.getSheet(testName);
 		Iterator<Row> rowIterator = worksheet.iterator();
@@ -59,6 +78,7 @@ public class ExcelUtils {
 		return data;
 	}
 
+	/************** Write to excel sheet ****************/
 	public static void writeExcel(String[] data, String sheetName,
 			String heading) {
 
@@ -88,7 +108,7 @@ public class ExcelUtils {
 			} else {
 				workbook = new XSSFWorkbook();
 			}
-			if(workbook.getSheet(sheetName)==null)
+			if (workbook.getSheet(sheetName) == null)
 				worksheet = workbook.createSheet(sheetName);
 			else
 				worksheet = workbook.getSheet(sheetName);

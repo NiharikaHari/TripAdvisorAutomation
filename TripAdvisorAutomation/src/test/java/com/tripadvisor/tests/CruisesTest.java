@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -15,7 +16,7 @@ import com.tripadvisor.pages.CruiseReviewsPage;
 import com.tripadvisor.pages.CruisesPage;
 import com.tripadvisor.pages.HolidayHomesPage;
 import com.tripadvisor.pages.HomePage;
-import com.tripadvisor.utils.ExcelUtils;
+import com.tripadvisor.utils.FileIO;
 
 public class CruisesTest extends BaseUI {
 
@@ -51,7 +52,12 @@ public class CruisesTest extends BaseUI {
 		for(int i=0;i<cruiseDetails.length;++i){
 			data[0][i]=cruiseDetails[i];
 		}
-		ExcelUtils.writeExcel(data, "CruiseDetails", new String[]{"No of Passengers", "No of Crew", "Launch Year"});
+		try {
+			Assert.assertEquals(3,cruiseDetails.length);
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+		FileIO.writeExcel(data, "CruiseDetails", new String[]{"No of Passengers", "No of Crew", "Launch Year"});
 	}
 	
 	@Test(priority=2)
@@ -59,12 +65,17 @@ public class CruisesTest extends BaseUI {
 		logger = report.createTest("Cruises Languages Test");
 		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver, logger);
 		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
-		ExcelUtils.writeExcel(cruiseLanguages, "CruiseLanguages", "Languages");
+		FileIO.writeExcel(cruiseLanguages, "CruiseLanguages", "Languages");
+		try {
+			Assert.assertTrue(cruiseLanguages.length>0);
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
 	}
 	
 	@DataProvider
 	public Object[][] cruiseData() throws IOException {
-		HashMap<String, ArrayList<String>> dataMap = ExcelUtils
+		HashMap<String, ArrayList<String>> dataMap = FileIO
 				.readExcelData("CruisesTest");
 		int noRow = dataMap.size();
 		int noCol = dataMap.get("1").size();
