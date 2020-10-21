@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.tripadvisor.base.BaseUI;
 
 public class CruiseReviewsPage extends BaseUI {
@@ -43,17 +44,20 @@ public class CruiseReviewsPage extends BaseUI {
 		arr[0]=numPassengers;
 		arr[1]=numCrew;
 		arr[2]=launchYearDate;
+		logger.log(Status.INFO, "Obtained cruise details");
 		return arr;
 	}
 
 	public String[] getLanguagesList() {
-		clickOn(more,10);
+		if(BaseUI.isElementPresent(more, 3))
+			clickOn(more,10);
 		List<WebElement> lang = getListOfElements(language_list);
 		String[] languages = new String[5];
 		for (int i = 0; i < lang.size()-1; i++) {
 			WebElement langEle = lang.get(i+1);
 			languages[i] = langEle.getText();
 		}
+		logger.log(Status.INFO, "Obtained cruise languages");
 		return languages;
 	}
 

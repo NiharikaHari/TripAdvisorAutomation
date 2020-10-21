@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.tripadvisor.base.BaseUI;
 
 
@@ -53,7 +54,7 @@ public class CruisesPage extends BaseUI{
 		}
 		waitForDocumentReady(5);
 		clickOn(search_button, 10);
-
+		logger.log(Status.INFO, "Search for cruise completed");
 	}
 	
 

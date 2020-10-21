@@ -16,7 +16,7 @@ public class DriverSetup {
 	public static WebDriver getChromeDriver() {
 		String userDir = System.getProperty("user.dir");
 		System.setProperty("webdriver.chrome.driver", userDir
-				+ "/resources/drivers/chromedriver.exe");
+				+ "/src/test/resources/drivers/chromedriver.exe");
 		ChromeOptions co = new ChromeOptions();
 		co.addArguments("--disable-infobars");
 		co.addArguments("--disable-notifications");
@@ -31,7 +31,7 @@ public class DriverSetup {
 	public static WebDriver getFirefoxDriver() {
 		String userDir = System.getProperty("user.dir");
 		System.setProperty("webdriver.gecko.driver", userDir
-				+ "/resources/drivers/geckodriver.exe");
+				+ "/src/test/resources/drivers/geckodriver.exe");
 		FirefoxOptions fo = new FirefoxOptions();
 		fo.addArguments("--disable-infobars");
 		fo.addArguments("--disable-notifications");
@@ -45,7 +45,7 @@ public class DriverSetup {
 	public static WebDriver getMSEdgeDriver() {
 		String userDir = System.getProperty("user.dir");
 		System.setProperty("webdriver.edge.driver", userDir
-				+ "/resources/drivers/msedgedriver.exe");
+				+ "/src/test/resources/drivers/msedgedriver.exe");
 		driver = new EdgeDriver();
 		driver.manage().window().maximize();
 		driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
