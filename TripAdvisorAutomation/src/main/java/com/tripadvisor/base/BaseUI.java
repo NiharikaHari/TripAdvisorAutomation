@@ -82,9 +82,9 @@ public class BaseUI {
 	}
 
 	/************** Open website URL ****************/
-	public static void openBrowser(String websiteUrl) {
+	public static void openBrowser(String websiteUrlKey) {
 		try {
-			driver.get(websiteUrl);
+			driver.get(prop.getProperty(websiteUrlKey));
 		} catch (Exception e) {
 			e.printStackTrace();
 			reportFail(e.getMessage());
@@ -96,7 +96,7 @@ public class BaseUI {
 	public static void switchToNewTab() {
 		ArrayList<String> tabs = new ArrayList<String>(
 				driver.getWindowHandles());
-		driver.switchTo().window(tabs.get(1));
+		driver.switchTo().window(tabs.get(tabs.size()-1));
 	}
 
 	/************** Switch to prev tab ****************/
@@ -104,7 +104,7 @@ public class BaseUI {
 		ArrayList<String> tabs = new ArrayList<String>(
 				driver.getWindowHandles());
 		driver.close();
-		driver.switchTo().window(tabs.get(0));
+		driver.switchTo().window(tabs.get(tabs.size()-2));
 	}
 
 	/************** Get list of web elements ****************/

@@ -15,6 +15,7 @@ import com.tripadvisor.base.BaseUI;
 import com.tripadvisor.pages.HolidayHomesPage;
 import com.tripadvisor.pages.HomePage;
 import com.tripadvisor.pages.HotelInfoPage;
+import com.tripadvisor.pages.LocationResultsPage;
 import com.tripadvisor.utils.DateUtils;
 import com.tripadvisor.utils.FileIO;
 
@@ -30,7 +31,7 @@ public class HolidayHomesTest extends BaseUI {
 	@BeforeClass
 	public void setUp() {
 		driver = invokeBrowser();
-		openBrowser("https://www.tripadvisor.in");
+		openBrowser("websiteURL");
 	}
 
 	/******** Verify message on entering non-existent location ********/
@@ -40,7 +41,8 @@ public class HolidayHomesTest extends BaseUI {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("dummylocation");
 		waitForDocumentReady(20);
-		String message = homePage.getInvalidLocationMsg();
+		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
+		String message = locationResultsPage.getInvalidLocationMsg();
 		driver.navigate().back();
 		try {
 			Assert.assertEquals(message,
@@ -58,6 +60,11 @@ public class HolidayHomesTest extends BaseUI {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation(location);
 		waitForDocumentReady(20);
+		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
+		locationResultsPage.clickLocation();
+		switchToNewTab();
+		waitForDocumentReady(20);
+		locationResultsPage.clickHolidayHomes();
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		holidayHomesPage.sortByRating();
 		String[] dateMonth = DateUtils.getCheckInDate();

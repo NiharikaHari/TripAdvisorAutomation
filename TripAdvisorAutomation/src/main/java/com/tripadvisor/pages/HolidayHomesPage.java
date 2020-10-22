@@ -27,12 +27,13 @@ public class HolidayHomesPage extends BaseUI {
 			.xpath("//div[@class='zGG8H0c4']//div//div[2]//div[1]//div[2]//span[2]//span[1]");
 	By apply_button = By.xpath("//button[contains(text(),'Apply')]");
 	By clear_filter = By.xpath("//div[contains(text(),'Clear all filters')]");
-	By applied_filters = By.xpath("//div[@class='_3Hv8ck3T']/following-sibling::*");
-	By more_amenities = By.xpath("//div[contains(text(),'Amenities')]/following-sibling::*/span[1]");
+	By applied_filters = By
+			.xpath("//div[@class='_3Hv8ck3T']/following-sibling::*");
+	By more_amenities = By
+			.xpath("//div[contains(text(),'Amenities')]/following-sibling::*/span[1]");
 	By elevator = By
 			.xpath("//div[@class='_3x5FiS7r']//div//div[8]//div[1]//label[1]");
-	By sort_dropdown = By
-			.xpath("//div[@class='_1wuPwxoN']");
+	By sort_dropdown = By.xpath("//div[@class='_1wuPwxoN']");
 	By traveller_rating = By
 			.xpath("//span[contains(text(),'Traveller Rating')]");
 	By hotel_name = By.xpath("//a[@class='_2K0y-IXo']");
@@ -63,7 +64,7 @@ public class HolidayHomesPage extends BaseUI {
 		// TODO: Set check in date to above date - "chech_in_out_date"
 		// first check if the month on top is correct, then select based on the
 		// date value
-		if(!isElementPresent(check_in_out_date_future, 1))
+		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_in, 20);
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
 		dates.get(0).click();
@@ -77,7 +78,7 @@ public class HolidayHomesPage extends BaseUI {
 		// TODO: Set check out date to above date - "chech_in_out_date"
 		// first check if the month on top is correct, then select based on the
 		// date value
-		if(!isElementPresent(check_in_out_date_future, 1))
+		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_out, 20);
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
 		dates.get(4).click();
@@ -89,7 +90,7 @@ public class HolidayHomesPage extends BaseUI {
 		String num;
 		for (int i = 0; i < 4; i++) {
 			num = driver.findElement(guest_number).getAttribute("value");
-			int guest_num = Integer.parseInt(num.substring(0,1));
+			int guest_num = Integer.parseInt(num.substring(0, 1));
 			if (guest_num < 4) {
 				clickOn(guest_add, 20);
 			} else {
@@ -150,25 +151,25 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Clicked on 'Cruises' button");
 	}
 
-	public void clickClearFilters(){
+	public void clickClearFilters() {
 		clickOn(clear_filter, 20);
 		logger.log(Status.INFO, "Clicked on 'Clear Filters' button");
 	}
-	
-	public boolean isFilterPresent(){
+
+	public boolean isFilterPresent() {
 		int noOfFilters = driver.findElements(applied_filters).size();
-		if(noOfFilters==0)
+		if (noOfFilters == 0)
 			return false;
 		return true;
 	}
-	
-	public void clickBookNow(){
+
+	public void clickBookNow() {
 		clickAction(book_now, 10);
 		logger.log(Status.INFO, "Clicked on 'Book Now' button");
 	}
-	
-	public boolean isPastDateNotSelected(){
-		if(!isElementPresent(check_in_out_date_future, 1))
+
+	public boolean isPastDateNotSelected() {
+		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_in, 20);
 		clickOn(check_in_out_date_past, 10);
 		logger.log(Status.INFO, "Checked if past date was selected");

@@ -34,7 +34,7 @@ public class HotelInfoPage extends BaseUI {
 	}
 	
 	public boolean isCheckin(String[] dateMonth){
-		String checkin = driver.findElement(checkin_date).getText();
+		String checkin = getText(checkin_date);
 		String[] date = checkin.split("/");
 		if(date[0].equals(dateMonth[0]) && date[1].equals(dateMonth[1])){
 			logger.log(Status.INFO, "CheckIn Date is correct");
@@ -45,7 +45,7 @@ public class HotelInfoPage extends BaseUI {
 	}
 	
 	public boolean isCheckout(String[] dateMonth){
-		String checkout = driver.findElement(checkout_date).getText();
+		String checkout = getText(checkout_date);
 		String[] date = checkout.split("/");
 		if(date[0].equals(dateMonth[0]) && date[1].equals(dateMonth[1])){
 			logger.log(Status.INFO, "CheckOut Date is correct");
@@ -56,7 +56,7 @@ public class HotelInfoPage extends BaseUI {
 	}
 	
 	public boolean isElevatorPresent(){
-		List<WebElement> amenitiesList = driver.findElements(amenities);
+		List<WebElement> amenitiesList = getListOfElements(amenities);
 		for(WebElement amenity: amenitiesList){
 			if(amenity.getText().contains("Elevator")){
 				logger.log(Status.INFO, "Elevator/Lift Facility is present");
