@@ -12,11 +12,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.tripadvisor.base.BaseUI;
-import com.tripadvisor.base.DriverSetup;
 import com.tripadvisor.pages.CruiseReviewsPage;
 import com.tripadvisor.pages.CruisesPage;
 import com.tripadvisor.pages.HolidayHomesPage;
 import com.tripadvisor.pages.HomePage;
+import com.tripadvisor.pages.LocationResultsPage;
 import com.tripadvisor.utils.FileIO;
 
 public class CruisesTest extends BaseUI {
@@ -29,7 +29,7 @@ public class CruisesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
-		driver = DriverSetup.getChromeDriver();
+		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
 
@@ -39,15 +39,17 @@ public class CruisesTest extends BaseUI {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
 		waitForDocumentReady(20);
+		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
+		locationResultsPage.clickLocation();
+		switchToNewTab();
+		waitForDocumentReady(20);
+		locationResultsPage.clickHolidayHomes();
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
-
 		holidayHomesPage.clickCruise();
 		waitForDocumentReady(20);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
-
 		switchToNewTab();
-
 		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
 				logger);
 		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();

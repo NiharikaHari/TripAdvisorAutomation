@@ -8,8 +8,8 @@ import com.tripadvisor.base.BaseUI;
 
 public class LocationResultsPage extends BaseUI {
 	By invalid_location_msg = getLocator("invalidLocationMsg_xpath");
-	By click_location = By.xpath("//div[@class='result-title']/span");
-	By holiday_homes_btn = By.xpath("//a[@title='Holiday Homes']");
+	By click_location = getLocator("clickLocation_xpath");
+	By holiday_homes_btn = getLocator("holidayHomesBtn_xpath");
 
 	public ExtentTest logger;
 	public WebDriver driver;
@@ -21,7 +21,6 @@ public class LocationResultsPage extends BaseUI {
 		this.driver = driver;
 	}
 
-	// Always use this constructor when initialising object of this page
 	public LocationResultsPage(WebDriver driver, ExtentTest logger) {
 		this.driver = driver;
 		this.logger = logger;

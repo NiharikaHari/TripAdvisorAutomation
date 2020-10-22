@@ -15,11 +15,12 @@ import com.tripadvisor.base.BaseUI;
 public class CruisesPage extends BaseUI{
 	public ExtentTest logger;
 	public WebDriver driver;
-	By line_dropdown=By.id("cruise_line_dropdown");
-	By cruise_line_options=By.xpath("//div[@class='_16IExTAJ _1S9IhgUs _2QtYWK6H']/child::div");
-	By ship_dropdown = By.xpath("//div[@class='_1NO-LVmX']");
-	By cruise_ship_options = By.xpath("//div[@class='_16IExTAJ _1S9IhgUs _2QtYWK6H']/div");
-	By search_button=By.xpath("//button[@class='_1JOGv2rJ _1_M9wxW9 _32M3JNKp _3yBiBka1 _3fiJJkxX']");
+	
+	By line_dropdown=getLocator("lineDropdown_id");
+	By cruise_line_options=getLocator("cruiseLineOptions_xpath");
+	By ship_dropdown =getLocator("shipDropdown_xpath");
+	By cruise_ship_options = getLocator("cruiseShipOptions_xpath");
+	By search_button=getLocator("searchButton_xpath");
 	
 	public CruisesPage(){
 	}
@@ -28,7 +29,6 @@ public class CruisesPage extends BaseUI{
 		this.driver = driver;
 	}
 	
-	//Always use this constructor when initialising object of this page
 	public CruisesPage(WebDriver driver, ExtentTest logger){
 		this.driver = driver;
 		this.logger = logger;
@@ -53,6 +53,12 @@ public class CruisesPage extends BaseUI{
 			}
 		}
 		waitForDocumentReady(5);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		clickOn(search_button, 10);
 		logger.log(Status.INFO, "Search for cruise completed");
 	}
