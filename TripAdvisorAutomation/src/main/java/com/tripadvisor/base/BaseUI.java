@@ -38,7 +38,8 @@ public class BaseUI {
 	public static ExtentReports report;
 	public static ExtentTest logger;
 	public static Properties prop;
-
+	public static String timestamp = DateUtils.getTimeStamp();
+	
 	public BaseUI() {
 		report = ExtentReportManager.getReportInstance();
 		prop = FileIO.initProperties();
@@ -110,9 +111,15 @@ public class BaseUI {
 	/************** Get list of web elements ****************/
 	public static List<WebElement> getListOfElements(By locator) {
 		List<WebElement> list = null;
+		try{
 		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+		}catch(NoSuchElementException e){
+		}catch(Exception e){
+			reportFail(e.getMessage());
+		}
 		list = driver.findElements(locator);
+		logger.log(Status.INFO, "Got list of elements : "+locator);
 		return list;
 	}
 

@@ -9,15 +9,17 @@ import org.openqa.selenium.WebElement;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.tripadvisor.base.BaseUI;
+import com.tripadvisor.utils.FileIO;
 
 public class CruiseReviewsPage extends BaseUI {
 
-	By no_of_passengers =getLocator("noOfPassengers_xpath");
-	By no_of_crew =getLocator("noOfCrew_xpath");
-	By launch_year =getLocator("launchYear_xpath");
-	By more =getLocator("more_xpath");
-	By language_list =getLocator("languageList_xpath");
-	
+	By no_of_passengers = getLocator("noOfPassengers_xpath");
+	By no_of_crew = getLocator("noOfCrew_xpath");
+	By launch_year = getLocator("launchYear_xpath");
+	By more = getLocator("more_xpath");
+	By more_language_list = getLocator("moreLanguageList_xpath");
+	By language_list = getLocator("languageList_xpath");
+
 	public ExtentTest logger;
 	public WebDriver driver;
 
@@ -48,17 +50,38 @@ public class CruiseReviewsPage extends BaseUI {
 		return arr;
 	}
 
+	public void writeExcelCruiseDetails(String[] cruiseDetails, String cruiseShip) {
+		String[][] data = new String[1][cruiseDetails.length+1];
+		data[0][0]="";
+		for (int i = 0; i < cruiseDetails.length; ++i) {
+			data[0][i+1] = cruiseDetails[i];
+		}
+		FileIO.writeExcel(data, "CruiseDetails", new String[] {
+				cruiseShip, "No of Passengers", "No of Crew", "Launch Year" });
+	}
+
+	public void writeExcelLanguages(String[] languages, String cruiseShip){
+		String[][] data = new String[languages.length][2];
+		for (int i = 0; i < languages.length; ++i) {
+			data[i][1] = languages[i];
+		}
+		FileIO.writeExcel(data, "CruiseLanguages", new String[]{cruiseShip, "Languages"});
+	}
+	
 	public String[] getLanguagesList() {
-		if (BaseUI.isElementPresent(more, 3))
+		List<WebElement> lang;
+		if (isElementPresent(more, 3)) {
 			clickOn(more, 10);
-		List<WebElement> lang = getListOfElements(language_list);
-		String[] languages = new String[5];
+			lang = getListOfElements(more_language_list);
+		} else {
+			lang = getListOfElements(language_list);
+		}
+		String[] languages = new String[lang.size()];
 		for (int i = 0; i < lang.size() - 1; i++) {
 			WebElement langEle = lang.get(i + 1);
 			languages[i] = langEle.getText();
 		}
 		logger.log(Status.INFO, "Obtained cruise languages");
 		return languages;
-
 	}
 }

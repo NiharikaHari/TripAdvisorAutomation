@@ -33,13 +33,14 @@ public class CruisesTest extends BaseUI {
 		openBrowser("websiteURL");
 	}
 
-	@Test(priority = 1, dataProvider = "cruiseData")
-	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
-		logger = report.createTest("Cruises Details Test");
+	@Test
+	public void clickSearchTest() {
+		logger = report.createTest("Click Search Test");
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
 		waitForDocumentReady(20);
-		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
+		LocationResultsPage locationResultsPage = new LocationResultsPage(
+				driver, logger);
 		locationResultsPage.clickLocation();
 		switchToNewTab();
 		waitForDocumentReady(20);
@@ -48,33 +49,53 @@ public class CruisesTest extends BaseUI {
 		holidayHomesPage.clickCruise();
 		waitForDocumentReady(20);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		try {
+			Assert.assertFalse(cruisesPage.isSearchButtonClicked());
+			reportPass("Click Search Test Passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** Verify that cruise ship details are extracted from particular cruise ********/
+	@Test(dependsOnMethods = "clickSearchTest", dataProvider = "cruiseData")
+	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
+		logger = report.createTest("Cruises Details Test");
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
+		cruisesPage.clickSearch();
 		switchToNewTab();
 		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
 				logger);
 		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();
-		String[][] data = new String[1][cruiseDetails.length];
-		for (int i = 0; i < cruiseDetails.length; ++i) {
-			data[0][i] = cruiseDetails[i];
-		}
+		switchToPrevTab();
+
 		try {
 			Assert.assertEquals(3, cruiseDetails.length);
+			cruiseReviewPage.writeExcelCruiseDetails(cruiseDetails, cruiseShip);
+			reportPass("Cruises Details Test Passed: " + cruiseShip);
 		} catch (AssertionError e) {
 			reportFail(e.getMessage());
 		}
-		FileIO.writeExcel(data, "CruiseDetails", new String[] {
-				"No of Passengers", "No of Crew", "Launch Year" });
+
 	}
 
-	@Test(priority = 2)
-	public void cruiseLanguagesTest() {
+	/******** Verify that cruise ship languages are extracted from particular cruise ********/
+	@Test(dependsOnMethods = "cruiseDetailsTest", dataProvider = "cruiseData")
+	public void cruiseLanguagesTest(String cruiseLine, String cruiseShip) {
 		logger = report.createTest("Cruises Languages Test");
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		cruisesPage.searchCruise(cruiseLine, cruiseShip);
+		cruisesPage.clickSearch();
+		switchToNewTab();
 		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
 				logger);
 		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
-		FileIO.writeExcel(cruiseLanguages, "CruiseLanguages", "Languages");
+		switchToPrevTab();
 		try {
 			Assert.assertTrue(cruiseLanguages.length > 0);
+			cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip);
+			reportPass("Cruises Languages Test Passed: " + cruiseShip);
 		} catch (AssertionError e) {
 			reportFail(e.getMessage());
 		}
