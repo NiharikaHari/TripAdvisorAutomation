@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import com.tripadvisor.base.BaseUI;
 
 public class LocationResultsPage extends BaseUI {
@@ -27,15 +28,19 @@ public class LocationResultsPage extends BaseUI {
 	}
 
 	public String getInvalidLocationMsg() {
-		return driver.findElement(invalid_location_msg).getText();
+		String result = driver.findElement(invalid_location_msg).getText();
+		logger.log(Status.INFO, "Invalid location message received");
+		return result;
 	}
 
 	public void clickLocation() {
 		clickOn(click_location, 10);
+		logger.log(Status.INFO, "Clicked on location");
 	}
 
 	public void clickHolidayHomes() {
 		clickOn(holiday_homes_btn, 10);
+		logger.log(Status.INFO, "Clicked on Holiday Homes");
 	}
 
 }

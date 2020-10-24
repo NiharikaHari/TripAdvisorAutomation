@@ -28,11 +28,10 @@ public class HomePage extends BaseUI {
 		this.logger = logger;
 	}
 
-	
 	public void searchHolidayHomesLocation(String location) {
 		clickOn(holiday_homes_btn, 20);
 		sendText(search_textbox, location);
-		clickOn(search_location,10);
+		clickOn(search_location, 10);
 		logger.log(Status.INFO, "Searched location for holiday homes");
 	}
 }

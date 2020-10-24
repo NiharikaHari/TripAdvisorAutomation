@@ -9,6 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.tripadvisor.base.BaseUI;
@@ -19,12 +20,9 @@ import com.tripadvisor.pages.HomePage;
 import com.tripadvisor.pages.LocationResultsPage;
 import com.tripadvisor.utils.FileIO;
 
+@Listeners(com.tripadvisor.utils.ListenerUtils.class)
 public class CruisesTest extends BaseUI {
 
-	// Pick one cruise line & pick a respective cruise ship under Cruises;
-	// TC 1 - Retrieve all the languages offered and store in a List; Display
-	// the same
-	// TC 2 - Display passengers, crew & launched year
 	private WebDriver driver;
 
 	@BeforeClass
@@ -36,7 +34,6 @@ public class CruisesTest extends BaseUI {
 	/******** Verify that search button is deactivated when cruise is not selected ********/
 	@Test
 	public void clickSearchTest() {
-		logger = report.createTest("Click Search Test");
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
 		waitForDocumentReady(20);
@@ -50,46 +47,28 @@ public class CruisesTest extends BaseUI {
 		holidayHomesPage.clickCruise();
 		waitForDocumentReady(20);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
-		try {
-			Assert.assertFalse(cruisesPage.isSearchButtonClicked());
-			reportPass("Click Search Test Passed");
-		} catch (AssertionError e) {
-			reportFail(e.getMessage());
-		}
+		Assert.assertFalse(cruisesPage.isSearchButtonClicked());
 	}
 
 	/******** Verify that ship dropdown is not activated until line is selected ********/
-	@Test(dependsOnMethods="clickSearchTest")
-	public void verifyShipDropDownTest(){
-		logger = report.createTest("Verify ShipDropDown Not Selected Test");
+	@Test(dependsOnMethods = "clickSearchTest")
+	public void verifyShipDropDownTest() {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
-		try {
-			Assert.assertFalse(cruisesPage.isShipDropdownActivated());
-			reportPass("Verify ShipDropDown Not Selected Test Passed");
-		} catch (AssertionError e) {
-			reportFail(e.getMessage());
-		}
+		Assert.assertFalse(cruisesPage.isShipDropdownActivated());
 	}
-	
+
 	/******** Verify that required cruise line and ship are selected ********/
-	@Test(dependsOnMethods="verifyShipDropDownTest", dataProvider="cruiseData")
-	public void verifyCruiseSelected(String cruiseLine, String cruiseShip){
-		logger = report.createTest("Verify Cruise Line and Ship are Selected Test: "+ cruiseShip);
+	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
+	public void verifyCruiseSelected(String cruiseLine, String cruiseShip) {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
-		try {
-			Assert.assertTrue(cruisesPage.isLineSelected(cruiseLine));
-			Assert.assertTrue(cruisesPage.isShipSelected(cruiseShip));
-			reportPass("Verify Cruise Line and Ship are Selected Test Passed: "+ cruiseShip);
-		} catch (AssertionError e) {
-			reportFail(e.getMessage());
-		}
+		Assert.assertTrue(cruisesPage.isLineSelected(cruiseLine));
+		Assert.assertTrue(cruisesPage.isShipSelected(cruiseShip));
 	}
-	
+
 	/******** Verify that cruise ship details are extracted from particular cruise ********/
 	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
 	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
-		logger = report.createTest("Cruises Details Test: "+ cruiseShip);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 		cruisesPage.clickSearch();
@@ -98,21 +77,14 @@ public class CruisesTest extends BaseUI {
 				logger);
 		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();
 		switchToPrevTab();
-
-		try {
-			Assert.assertEquals(3, cruiseDetails.length);
-			cruiseReviewPage.writeExcelCruiseDetails(cruiseDetails, cruiseShip);
-			reportPass("Cruises Details Test Passed: " + cruiseShip);
-		} catch (AssertionError e) {
-			reportFail(e.getMessage());
-		}
+		Assert.assertEquals(3, cruiseDetails.length);
+		cruiseReviewPage.writeExcelCruiseDetails(cruiseDetails, cruiseShip);
 
 	}
 
 	/******** Verify that cruise ship languages are extracted from particular cruise ********/
 	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
 	public void cruiseLanguagesTest(String cruiseLine, String cruiseShip) {
-		logger = report.createTest("Cruises Languages Test: "+ cruiseShip);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 		cruisesPage.clickSearch();
@@ -121,13 +93,8 @@ public class CruisesTest extends BaseUI {
 				logger);
 		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
 		switchToPrevTab();
-		try {
-			Assert.assertTrue(cruiseLanguages.length > 0);
-			cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip);
-			reportPass("Cruises Languages Test Passed: " + cruiseShip);
-		} catch (AssertionError e) {
-			reportFail(e.getMessage());
-		}
+		Assert.assertTrue(cruiseLanguages.length > 0);
+		cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip);
 	}
 
 	@DataProvider
@@ -149,7 +116,6 @@ public class CruisesTest extends BaseUI {
 	@AfterClass
 	public void afterTest() {
 		driver.quit();
-		report.flush();
 	}
 
 }
