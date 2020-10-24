@@ -33,6 +33,7 @@ public class CruisesTest extends BaseUI {
 		openBrowser("websiteURL");
 	}
 
+	/******** Verify that search button is deactivated when cruise is not selected ********/
 	@Test
 	public void clickSearchTest() {
 		logger = report.createTest("Click Search Test");
@@ -57,10 +58,38 @@ public class CruisesTest extends BaseUI {
 		}
 	}
 
+	/******** Verify that ship dropdown is not activated until line is selected ********/
+	@Test(dependsOnMethods="clickSearchTest")
+	public void verifyShipDropDownTest(){
+		logger = report.createTest("Verify ShipDropDown Not Selected Test");
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		try {
+			Assert.assertFalse(cruisesPage.isShipDropdownActivated());
+			reportPass("Verify ShipDropDown Not Selected Test Passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+	
+	/******** Verify that required cruise line and ship are selected ********/
+	@Test(dependsOnMethods="verifyShipDropDownTest", dataProvider="cruiseData")
+	public void verifyCruiseSelected(String cruiseLine, String cruiseShip){
+		logger = report.createTest("Verify Cruise Line and Ship are Selected Test: "+ cruiseShip);
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		cruisesPage.searchCruise(cruiseLine, cruiseShip);
+		try {
+			Assert.assertTrue(cruisesPage.isLineSelected(cruiseLine));
+			Assert.assertTrue(cruisesPage.isShipSelected(cruiseShip));
+			reportPass("Verify Cruise Line and Ship are Selected Test Passed: "+ cruiseShip);
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+	
 	/******** Verify that cruise ship details are extracted from particular cruise ********/
-	@Test(dependsOnMethods = "clickSearchTest", dataProvider = "cruiseData")
+	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
 	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
-		logger = report.createTest("Cruises Details Test");
+		logger = report.createTest("Cruises Details Test: "+ cruiseShip);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 		cruisesPage.clickSearch();
@@ -81,9 +110,9 @@ public class CruisesTest extends BaseUI {
 	}
 
 	/******** Verify that cruise ship languages are extracted from particular cruise ********/
-	@Test(dependsOnMethods = "cruiseDetailsTest", dataProvider = "cruiseData")
+	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
 	public void cruiseLanguagesTest(String cruiseLine, String cruiseShip) {
-		logger = report.createTest("Cruises Languages Test");
+		logger = report.createTest("Cruises Languages Test: "+ cruiseShip);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 		cruisesPage.clickSearch();
