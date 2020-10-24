@@ -38,6 +38,7 @@ public class BaseUI {
 	public static ExtentTest logger;
 	public static Properties prop;
 	public static String timestamp = DateUtils.getTimeStamp();
+	public static int browser_choice;
 
 	public BaseUI() {
 		prop = FileIO.initProperties();
@@ -45,11 +46,10 @@ public class BaseUI {
 
 	/************** Invoke Browser ****************/
 	public static WebDriver invokeBrowser() {
-		int choice = getBrowserOption();
 		try {
-			if (choice == 1) {
+			if (browser_choice == 1) {
 				driver = DriverSetup.getChromeDriver();
-			} else if (choice == 2) {
+			} else if (browser_choice == 2) {
 				driver = DriverSetup.getMSEdgeDriver();
 			} else {
 				driver = DriverSetup.getFirefoxDriver();

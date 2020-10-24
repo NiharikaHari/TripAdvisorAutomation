@@ -27,6 +27,7 @@ public class HolidayHomesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
+		BaseUI.browser_choice=BaseUI.getBrowserOption();
 		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
@@ -47,7 +48,7 @@ public class HolidayHomesTest extends BaseUI {
 
 	/******** Verify the whole scenario for all valid options ********/
 	@Test(dataProvider = "holidayHomesData", dependsOnMethods = "invalidLocationTest")
-	public void holidayHomesTest(String location) {
+	public void holidayHomesTest(String location, String guestNo, String sortBy) {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation(location);
 		waitForDocumentReady(20);
@@ -59,10 +60,10 @@ public class HolidayHomesTest extends BaseUI {
 		locationResultsPage.clickHolidayHomes();
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		waitForDocumentReady(20);
-		holidayHomesPage.sortByRating();
+		holidayHomesPage.sortBy(sortBy);
 		holidayHomesPage.setCheckIn();
 		holidayHomesPage.setCheckOut();
-		holidayHomesPage.setGuests();
+		holidayHomesPage.setGuests(Integer.parseInt(guestNo));
 		holidayHomesPage.selectLift();
 		holidayHomesPage.waitForHotelsLoaded();
 		String[] hotelNames = holidayHomesPage.getHotelNames();

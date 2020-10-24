@@ -43,6 +43,7 @@ public class HolidayHomesPage extends BaseUI {
 	By check_in_text = getLocator("checkInText_xpath");
 	By check_out_text = getLocator("checkOutText_xpath");
 	By hotel_match = getLocator("hotelMatch_xpath");
+	By sort_by_options=getLocator("sortByOptions_xpath");
 
 	public ExtentTest logger;
 	public WebDriver driver;
@@ -75,25 +76,31 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "CheckOut date is entered");
 	}
 
-	public void setGuests() {
+	public void setGuests(int guestNo) {
 		clickOn(guest_button, 20);
 		String num;
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < guestNo; i++) {
 			num = driver.findElement(guest_number).getAttribute("value");
 			int guest_num = Integer.parseInt(num.substring(0, 1));
-			if (guest_num < 4) {
+			if (guest_num < guestNo) {
 				clickOn(guest_add, 20);
 			} else {
 				break;
 			}
 		}
 		clickOn(apply_button, 20);
-		logger.log(Status.INFO, "Number of guests is set to 4+");
+		logger.log(Status.INFO, "Number of guests is set to "+guestNo+"+");
 	}
 
-	public void sortByRating() {
+	public void sortBy(String sortBy) {
 		clickAction(sort_dropdown, 10);
-		clickOn(traveller_rating, 10);
+		List<WebElement> sortOptions = getListOfElements(sort_by_options);
+		for(WebElement option: sortOptions){
+			if(option.getText().contains(sortBy)){
+				option.click();
+				break;
+			}
+		}
 		logger.log(Status.INFO, "Sorted by Travellor Rating");
 	}
 
