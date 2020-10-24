@@ -38,7 +38,8 @@ public class BaseUI {
 	public static ExtentReports report;
 	public static ExtentTest logger;
 	public static Properties prop;
-
+	public static String timestamp = DateUtils.getTimeStamp();
+	
 	public BaseUI() {
 		report = ExtentReportManager.getReportInstance();
 		prop = FileIO.initProperties();
@@ -82,9 +83,9 @@ public class BaseUI {
 	}
 
 	/************** Open website URL ****************/
-	public static void openBrowser(String websiteUrl) {
+	public static void openBrowser(String websiteUrlKey) {
 		try {
-			driver.get(websiteUrl);
+			driver.get(prop.getProperty(websiteUrlKey));
 		} catch (Exception e) {
 			e.printStackTrace();
 			reportFail(e.getMessage());
@@ -96,7 +97,7 @@ public class BaseUI {
 	public static void switchToNewTab() {
 		ArrayList<String> tabs = new ArrayList<String>(
 				driver.getWindowHandles());
-		driver.switchTo().window(tabs.get(1));
+		driver.switchTo().window(tabs.get(tabs.size()-1));
 	}
 
 	/************** Switch to prev tab ****************/
@@ -104,15 +105,21 @@ public class BaseUI {
 		ArrayList<String> tabs = new ArrayList<String>(
 				driver.getWindowHandles());
 		driver.close();
-		driver.switchTo().window(tabs.get(0));
+		driver.switchTo().window(tabs.get(tabs.size()-2));
 	}
 
 	/************** Get list of web elements ****************/
 	public static List<WebElement> getListOfElements(By locator) {
 		List<WebElement> list = null;
+		try{
 		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+		}catch(NoSuchElementException e){
+		}catch(Exception e){
+			reportFail(e.getMessage());
+		}
 		list = driver.findElements(locator);
+		logger.log(Status.INFO, "Got list of elements : "+locator);
 		return list;
 	}
 

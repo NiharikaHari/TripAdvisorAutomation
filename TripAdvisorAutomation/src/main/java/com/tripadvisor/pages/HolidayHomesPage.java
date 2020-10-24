@@ -9,37 +9,38 @@ import org.openqa.selenium.WebElement;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.tripadvisor.base.BaseUI;
+import com.tripadvisor.utils.DateUtils;
 
 public class HolidayHomesPage extends BaseUI {
 
-	By show_price = By.xpath("//button[@class='ui_button original fullwidth']");
-	By check_in = By.xpath("//div[@class='lRYY2wxe']");
-	By check_out = By.xpath("//div[@class='_1rZK5NGr']");
-	By check_in_out_date_future = By.xpath("//div[@class='_3ULdV0X_ ']");
-	By check_in_out_date_past = By.xpath("//div[@class='_3ULdV0X_ _3EgHgIoQ']");
-	By check_in_out_text = By.xpath("//div[@class='_1TRuMIKB']");
-	By month_year = By.xpath("//div[@class='_2DSA78he']/div[1]/div[1]");
-	By guest_button = By
-			.xpath("//body/div[2]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[3]/div[1]/div[1]");
-	By guest_number = By
-			.xpath("//div[@class='zGG8H0c4']//div//div[2]//div[1]//div[2]//input[1]");
-	By guest_add = By
-			.xpath("//div[@class='zGG8H0c4']//div//div[2]//div[1]//div[2]//span[2]//span[1]");
-	By apply_button = By.xpath("//button[contains(text(),'Apply')]");
-	By clear_filter = By.xpath("//div[contains(text(),'Clear all filters')]");
-	By applied_filters = By.xpath("//div[@class='_3Hv8ck3T']/following-sibling::*");
-	By more_amenities = By.xpath("//div[contains(text(),'Amenities')]/following-sibling::*/span[1]");
-	By elevator = By
-			.xpath("//div[@class='_3x5FiS7r']//div//div[8]//div[1]//label[1]");
-	By sort_dropdown = By
-			.xpath("//div[@class='_1wuPwxoN']");
-	By traveller_rating = By
-			.xpath("//span[contains(text(),'Traveller Rating')]");
-	By hotel_name = By.xpath("//a[@class='_2K0y-IXo']");
-	By total_price = By.xpath("//div[@class='_3f9mHAKH']");
-	By price_per_night = By.xpath("//div[@class='_33TIi_t4']");
-	By book_now = By.xpath("//button[@class='ui_button original fullwidth']");
-	By cruises = By.xpath("//span[contains(text(),'Cruises')]");
+	By show_price = getLocator("showPrice_xpath");
+	By check_in = getLocator("checkIn_xpath");
+	By check_out = getLocator("checkOut_xpath");
+	By check_in_out_date_future = getLocator("checkInOutDateFuture_xpath");
+	By check_in_out_date_past = getLocator("checkInOutDatePast_xpath");
+	By check_in_out_text = getLocator("checkInOutText_xpath");
+	By month_year = getLocator("monthYear_xpath");
+	By guest_button = getLocator("guestButton_xpath");
+	By guest_number = getLocator("guestNumber_xpath");
+	By guest_add = getLocator("guestAdd_xpath");
+	By apply_button = getLocator("applyButton_xpath");
+	By clear_filter = getLocator("clearFilter_xpath");
+	By applied_filters = getLocator("appliedFilters_xpath");
+	By more_amenities = getLocator("moreAmenities_xpath");
+	By elevator = getLocator("elevator_xpath");
+	By sort_dropdown = getLocator("sortDropdown_xpath");
+	By traveller_rating = getLocator("travellerRating_xpath");
+	By hotel_name = getLocator("hotelName_xpath");
+	By total_price = getLocator("totalPrice_xpath");
+	By price_per_night = getLocator("pricePerNight_xpath");
+	By book_now = getLocator("bookNow_xpath");
+	By cruises = getLocator("cruises_xpath");
+	By elevator_filter = getLocator("elevatorFilter_xpath");
+	By checkin_date = getLocator("checkinDate_xpath");
+	By checkout_date = getLocator("checkoutDate_xpath");
+	By check_in_out_filter = getLocator("checkInOutFilter_xpath");
+	By check_in_text = getLocator("checkInText_xpath");
+	By check_out_text = getLocator("checkOutText_xpath");
 
 	public ExtentTest logger;
 	public WebDriver driver;
@@ -56,28 +57,16 @@ public class HolidayHomesPage extends BaseUI {
 		this.logger = logger;
 	}
 
-	public void setCheckIn(String[] dateMonth) {
-		// dateMonth is a String array with two values, date and month, e.g. 16
-		// Oct is {"16","10"}
-		// TODO: Click on "check_in"
-		// TODO: Set check in date to above date - "chech_in_out_date"
-		// first check if the month on top is correct, then select based on the
-		// date value
-		if(!isElementPresent(check_in_out_date_future, 1))
+	public void setCheckIn() {
+		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_in, 20);
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
 		dates.get(0).click();
 		logger.log(Status.INFO, "CheckIn date is entered");
 	}
 
-	public void setCheckOut(String[] dateMonth) {
-		// dateMonth is a String array with two values, date and month, e.g. 16
-		// Oct is {"16","10"}
-		// TODO: Click on "check_out"
-		// TODO: Set check out date to above date - "chech_in_out_date"
-		// first check if the month on top is correct, then select based on the
-		// date value
-		if(!isElementPresent(check_in_out_date_future, 1))
+	public void setCheckOut() {
+		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_out, 20);
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
 		dates.get(4).click();
@@ -89,7 +78,7 @@ public class HolidayHomesPage extends BaseUI {
 		String num;
 		for (int i = 0; i < 4; i++) {
 			num = driver.findElement(guest_number).getAttribute("value");
-			int guest_num = Integer.parseInt(num.substring(0,1));
+			int guest_num = Integer.parseInt(num.substring(0, 1));
 			if (guest_num < 4) {
 				clickOn(guest_add, 20);
 			} else {
@@ -113,10 +102,9 @@ public class HolidayHomesPage extends BaseUI {
 	}
 
 	public String[] getHotelNames() {
-		List<WebElement> hotel_elements = getListOfElements(hotel_name);
 		String[] hotel_names = new String[5];
 		for (int i = 0; i < 5; i++) {
-			WebElement hotel_element = hotel_elements.get(i);
+			WebElement hotel_element = getListOfElements(hotel_name).get(i);
 			hotel_names[i] = hotel_element.getText();
 		}
 		logger.log(Status.INFO, "Obtained names of top 5 hotels");
@@ -124,21 +112,21 @@ public class HolidayHomesPage extends BaseUI {
 	}
 
 	public String[] getTotalPrices() {
-		List<WebElement> total_price_elements = getListOfElements(total_price);
-		String[] total_price = new String[5];
+		String[] total_prices = new String[5];
 		for (int i = 0; i < 5; i++) {
-			WebElement total_price_element = total_price_elements.get(i);
-			total_price[i] = total_price_element.getText();
+			WebElement total_price_element = getListOfElements(total_price)
+					.get(i);
+			total_prices[i] = total_price_element.getText();
 		}
 		logger.log(Status.INFO, "Obtained total price of top 5 hotels");
-		return total_price;
+		return total_prices;
 	}
 
 	public String[] getPerNightPrices() {
-		List<WebElement> perNight_price_elements = getListOfElements(price_per_night);
 		String[] night_price = new String[5];
 		for (int i = 0; i < 5; i++) {
-			WebElement night_price_element = perNight_price_elements.get(i);
+			WebElement night_price_element = getListOfElements(price_per_night)
+					.get(i);
 			night_price[i] = night_price_element.getText();
 		}
 		logger.log(Status.INFO, "Obtained price per night of top 5 hotels");
@@ -150,28 +138,77 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Clicked on 'Cruises' button");
 	}
 
-	public void clickClearFilters(){
+	public void clickClearFilters() {
 		clickOn(clear_filter, 20);
 		logger.log(Status.INFO, "Clicked on 'Clear Filters' button");
 	}
-	
-	public boolean isFilterPresent(){
+
+	public boolean isFilterPresent() {
 		int noOfFilters = driver.findElements(applied_filters).size();
-		if(noOfFilters==0)
+		if (noOfFilters == 0)
 			return false;
 		return true;
 	}
-	
-	public void clickBookNow(){
+
+	public void clickBookNow() {
 		clickAction(book_now, 10);
 		logger.log(Status.INFO, "Clicked on 'Book Now' button");
 	}
-	
-	public boolean isPastDateNotSelected(){
-		if(!isElementPresent(check_in_out_date_future, 1))
+
+	public boolean isPastDateNotSelected() {
+		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_in, 20);
 		clickOn(check_in_out_date_past, 10);
 		logger.log(Status.INFO, "Checked if past date was selected");
 		return isElementPresent(check_in_out_date_future, 1);
+	}
+
+	public boolean verifyCheckIn() {
+		String[] checkinDate = DateUtils.getCheckInDate();
+		String[] checkin = getText(checkin_date).split("/");
+		for (int i = 0; i < checkinDate.length; ++i)
+			if (!checkin[i].equals(checkinDate[i]))
+				return false;
+		return true;
+	}
+
+	public boolean verifyCheckOut() {
+		String[] checkoutDate = DateUtils.getCheckOutDate();
+		String[] checkout = getText(checkout_date).split("/");
+		for (int i = 0; i < checkoutDate.length; ++i)
+			if (!checkout[i].equals(checkoutDate[i]))
+				return false;
+		return true;
+	}
+
+	public boolean verifyElevatorSelected() {
+		int noOfFilters = driver.findElements(applied_filters).size();
+		if (noOfFilters == 2)
+			return true;
+		return false;
+	}
+
+	public boolean isShowPricesPresent() {
+		if (isElementPresent(show_price, 2))
+			return true;
+		return false;
+	}
+
+	public boolean isBookNowPresent() {
+		if (isElementPresent(book_now, 2))
+			return true;
+		return false;
+	}
+
+	public boolean verifyCheckInOutFilter() {
+		String checkIn = getText(check_in_text);
+		String checkInFilter = getText(check_in_out_filter).split("-")[0]
+				.trim();
+		String checkOut = getText(check_out_text);
+		String checkOutFilter = getText(check_in_out_filter).split("-")[1]
+				.trim();
+		if (checkIn.equals(checkInFilter) && checkOut.equals(checkOutFilter))
+			return true;
+		return false;
 	}
 }

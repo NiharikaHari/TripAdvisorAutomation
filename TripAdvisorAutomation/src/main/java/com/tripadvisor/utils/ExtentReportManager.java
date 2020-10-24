@@ -10,7 +10,7 @@ public class ExtentReportManager extends BaseUI {
 	
 	public static ExtentReports getReportInstance(){
 		if(report==null){
-			ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")+"/Output/TestReport_"+DateUtils.getTimeStamp()+".html");
+			ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")+"/TestOutput/TestReport_"+BaseUI.timestamp+".html");
 			report = new ExtentReports();
 			report.attachReporter(htmlReporter);
 			report.setSystemInfo("OS", "Windows 10");

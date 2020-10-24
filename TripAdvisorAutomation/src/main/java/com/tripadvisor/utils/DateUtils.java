@@ -15,7 +15,8 @@ public class DateUtils {
 	    cal.add(Calendar.DAY_OF_MONTH, 1);
 	    String date = String.valueOf(cal.get(Calendar.DATE));
 	    String month = String.valueOf(cal.get(Calendar.MONTH)+1);   
-		return new String[]{date, month};
+	    String year = String.valueOf(cal.get(Calendar.YEAR)).substring(2);   	    
+		return new String[]{date, month, year};
 	}
 	
 	public static String[] getCheckOutDate(){
@@ -23,7 +24,8 @@ public class DateUtils {
 	    cal.add(Calendar.DAY_OF_MONTH, 6);  
 	    String date = String.valueOf(cal.get(Calendar.DATE));
 	    String month = String.valueOf(cal.get(Calendar.MONTH)+1);
-		return new String[]{date, month};
+	    String year = String.valueOf(cal.get(Calendar.YEAR)).substring(2);   	   	    
+		return new String[]{date, month, year};
 	}
 	
 }

@@ -15,6 +15,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.tripadvisor.base.BaseUI;
+
 public class FileIO {
 
 	private static FileInputStream read_file;
@@ -24,6 +26,7 @@ public class FileIO {
 	private static FileOutputStream write_file;
 	private static File file;
 	private static Properties prop;
+	
 
 	/************** Get properties file ****************/
 	public static Properties initProperties() {
@@ -95,7 +98,7 @@ public class FileIO {
 
 	public static void writeExcel(String[][] data, String sheetName,
 			String headings[]) {
-		String filePath = System.getProperty("user.dir") + "/Output.xlsx";
+		String filePath = System.getProperty("user.dir") + "/TestOutput/Output_"+BaseUI.timestamp+".xlsx";
 		file = new File(filePath);
 
 		boolean fileExists = false;
@@ -108,16 +111,19 @@ public class FileIO {
 			} else {
 				workbook = new XSSFWorkbook();
 			}
+			int rowStart = 0;
 			if (workbook.getSheet(sheetName) == null)
 				worksheet = workbook.createSheet(sheetName);
-			else
+			else{
 				worksheet = workbook.getSheet(sheetName);
-			row = worksheet.createRow(0);
+				rowStart = worksheet.getLastRowNum()+2;
+			}
+			row = worksheet.createRow(rowStart);
 			for (int i = 0; i < data[0].length; ++i) {
 				row.createCell(i).setCellValue(headings[i]);
 			}
 			for (int i = 0; i < data.length; ++i) {
-				row = worksheet.createRow(i + 1);
+				row = worksheet.createRow(i +rowStart+ 1);
 				for (int j = 0; j < data[0].length; ++j) {
 					row.createCell(j).setCellValue(data[i][j]);
 				}
@@ -125,7 +131,7 @@ public class FileIO {
 			for (int i = 0; i < data[0].length; ++i) {
 				worksheet.autoSizeColumn(i);
 			}
-			write_file = new FileOutputStream("Output.xlsx");
+			write_file = new FileOutputStream(filePath);
 			workbook.write(write_file);
 			write_file.close();
 			workbook.close();

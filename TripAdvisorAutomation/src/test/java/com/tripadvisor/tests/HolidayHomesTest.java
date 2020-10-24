@@ -15,6 +15,7 @@ import com.tripadvisor.base.BaseUI;
 import com.tripadvisor.pages.HolidayHomesPage;
 import com.tripadvisor.pages.HomePage;
 import com.tripadvisor.pages.HotelInfoPage;
+import com.tripadvisor.pages.LocationResultsPage;
 import com.tripadvisor.utils.DateUtils;
 import com.tripadvisor.utils.FileIO;
 
@@ -30,7 +31,7 @@ public class HolidayHomesTest extends BaseUI {
 	@BeforeClass
 	public void setUp() {
 		driver = invokeBrowser();
-		openBrowser("https://www.tripadvisor.in");
+		openBrowser("websiteURL");
 	}
 
 	/******** Verify message on entering non-existent location ********/
@@ -40,7 +41,9 @@ public class HolidayHomesTest extends BaseUI {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("dummylocation");
 		waitForDocumentReady(20);
-		String message = homePage.getInvalidLocationMsg();
+		LocationResultsPage locationResultsPage = new LocationResultsPage(
+				driver, logger);
+		String message = locationResultsPage.getInvalidLocationMsg();
 		driver.navigate().back();
 		try {
 			Assert.assertEquals(message,
@@ -52,18 +55,22 @@ public class HolidayHomesTest extends BaseUI {
 	}
 
 	/******** Verify the whole scenario for all valid options ********/
-	@Test(dataProvider = "holidayHomesData", dependsOnMethods="invalidLocationTest")
+	@Test(dataProvider = "holidayHomesData", dependsOnMethods = "invalidLocationTest")
 	public void holidayHomesTest(String location) {
 		logger = report.createTest("Holiday Homes Test - " + location);
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation(location);
 		waitForDocumentReady(20);
+		LocationResultsPage locationResultsPage = new LocationResultsPage(
+				driver, logger);
+		locationResultsPage.clickLocation();
+		switchToNewTab();
+		waitForDocumentReady(20);
+		locationResultsPage.clickHolidayHomes();
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		holidayHomesPage.sortByRating();
-		String[] dateMonth = DateUtils.getCheckInDate();
-		holidayHomesPage.setCheckIn(dateMonth);
-		dateMonth = DateUtils.getCheckOutDate();
-		holidayHomesPage.setCheckOut(dateMonth);
+		holidayHomesPage.setCheckIn();
+		holidayHomesPage.setCheckOut();
 		holidayHomesPage.setGuests();
 		holidayHomesPage.selectLift();
 		String[] hotelNames = holidayHomesPage.getHotelNames();
@@ -87,8 +94,8 @@ public class HolidayHomesTest extends BaseUI {
 		}
 	}
 
-	/******** Verify �Book Now� button functionality on hotels page ********/
-	@Test(dependsOnMethods="holidayHomesTest")
+	/******** Verify Book Now button functionality on hotels page ********/
+	@Test(dependsOnMethods = "holidayHomesTest")
 	public void verifyBookNowTest() {
 		logger = report.createTest("Verify Book Now Functionality Test");
 		try {
@@ -104,8 +111,8 @@ public class HolidayHomesTest extends BaseUI {
 		}
 	}
 
-	/******** Verify desired amenities are present for first result ********/
-	@Test(dependsOnMethods="verifyBookNowTest")
+	/******** Verify desired check-in is present for first result ********/
+	@Test(dependsOnMethods = "verifyBookNowTest")
 	public void verifyCheckIn() {
 		logger = report.createTest("Verify CheckIn Date Test");
 		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
@@ -117,8 +124,9 @@ public class HolidayHomesTest extends BaseUI {
 			reportFail(e.getMessage());
 		}
 	}
-	
-	@Test(dependsOnMethods="verifyCheckIn")
+
+	/******** Verify desired check-out is present for first result ********/
+	@Test(dependsOnMethods = "verifyCheckIn")
 	public void verifyCheckOut() {
 		logger = report.createTest("Verify CheckOut Date Test");
 		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
@@ -131,8 +139,23 @@ public class HolidayHomesTest extends BaseUI {
 			reportFail(e.getMessage());
 		}
 	}
-	
-	@Test(dependsOnMethods="verifyCheckOut")
+
+	/******** Verify desired no of guests is present for first result ********/
+	@Test(dependsOnMethods = "verifyCheckOut")
+	public void verifyGuests() {
+		logger = report.createTest("Verify No of Guests Test");
+		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
+		boolean verifyGuests = hotelPage.verifyNoOfGuests();
+		try {
+			Assert.assertTrue(verifyGuests);
+			reportPass("Verify No of Guests Test passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** Verify Elevator is present for first result ********/
+	@Test(dependsOnMethods = "verifyGuests")
 	public void verifyElevator() {
 		logger = report.createTest("Verify Elevator Amenity Present Test");
 		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
@@ -145,16 +168,9 @@ public class HolidayHomesTest extends BaseUI {
 			reportFail(e.getMessage());
 		}
 	}
-	
-	/******** Verify choosing checkout date smaller than checkin date functionality ********/
-	@Test(dependsOnMethods="verifyElevator")
-	public void earlyCheckoutDateTest(){
-		logger = report.createTest("Choose Checkout Before Checkin Test");
-		
-	}
-	
-	/******** Verify Clear All Filters� functionality ********/
-	@Test(dependsOnMethods="earlyCheckoutDateTest")
+
+	/******** Verify Clear All Filters functionality ********/
+	@Test(dependsOnMethods = "verifyElevator")
 	public void clearAllFiltersTest() {
 		logger = report.createTest("Clear All Filters Test");
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
@@ -167,8 +183,101 @@ public class HolidayHomesTest extends BaseUI {
 		}
 	}
 
+	/********
+	 * Verify that Show Prices button turns to Book Now when checkin and
+	 * checkout is applied
+	 ********/
+	@Test(dependsOnMethods = "clearAllFiltersTest")
+	public void showPricesButtonTest() {
+		logger = report.createTest("Show Prices Button Present Test");
+		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
+		try {
+			Assert.assertTrue(holidayHomesPage.isShowPricesPresent());
+			Assert.assertFalse(holidayHomesPage.isBookNowPresent());
+			reportPass("Show Prices Button Present Test");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/********
+	 * Verify that Show Prices button turns to Book Now when checkin and
+	 * checkout is applied
+	 ********/
+	@Test(dependsOnMethods = "showPricesButtonTest")
+	public void bookNowButtonTest() {
+		logger = report.createTest("Book Now Button Present Test");
+		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
+		holidayHomesPage.setCheckIn();
+		holidayHomesPage.setCheckOut();
+		try {
+			Assert.assertTrue(holidayHomesPage.isBookNowPresent());
+			Assert.assertFalse(holidayHomesPage.isShowPricesPresent());
+			reportPass("Book Now Button Present Test");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** Verify that check-in date is selected for tomorrow ********/
+	@Test(dependsOnMethods = "bookNowButtonTest")
+	public void verifyCheckInSelected() {
+		logger = report.createTest("Verify correct Check-in date Test");
+		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
+		try {
+			Assert.assertTrue(holidayHomesPage.verifyCheckIn());
+			reportPass("Verify correct Check-in date Test passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** Verify that check-out date is selected for 5 days after check-in ********/
+	@Test(dependsOnMethods = "verifyCheckInSelected")
+	public void verifyCheckOutSelected() {
+		logger = report.createTest("Verify correct Check-out date Test");
+		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
+		try {
+			Assert.assertTrue(holidayHomesPage.verifyCheckOut());
+			reportPass("Verify correct Check-out date Test passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/********
+	 * Verify that check-in and out dates are correctly displayed under applied
+	 * filters
+	 ********/
+	@Test(dependsOnMethods = "verifyCheckInSelected")
+	public void verifyCheckInOutFilterTest() {
+		logger = report
+				.createTest("Verify Check-In-Out Filter Displayed Correctly Test");
+		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
+		try {
+			Assert.assertTrue(holidayHomesPage.verifyCheckInOutFilter());
+			reportPass("Verify Check-In-Out Filter Displayed Correctly Test passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** Verify that Elevator amenity is selected ********/
+	@Test(dependsOnMethods = "verifyCheckInOutFilterTest")
+	public void verifyElevatorSelected() {
+		logger = report.createTest("Verify Elevator is selected Test");
+		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
+		holidayHomesPage.selectLift();
+		try {
+			Assert.assertTrue(holidayHomesPage.verifyElevatorSelected());
+			reportPass("Verify Elevator is selected Test passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
 	/******** Verify Past Date does not get selected ********/
-	@Test(dependsOnMethods="clearAllFiltersTest")
+	@Test(dependsOnMethods = "verifyElevatorSelected")
 	public void verifyPastDateNotSelected() {
 		logger = report.createTest("Verify Past Date Not Selected Test");
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);

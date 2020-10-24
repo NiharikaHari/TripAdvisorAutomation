@@ -16,63 +16,120 @@ import com.tripadvisor.pages.CruiseReviewsPage;
 import com.tripadvisor.pages.CruisesPage;
 import com.tripadvisor.pages.HolidayHomesPage;
 import com.tripadvisor.pages.HomePage;
+import com.tripadvisor.pages.LocationResultsPage;
 import com.tripadvisor.utils.FileIO;
 
 public class CruisesTest extends BaseUI {
 
-	//Pick one cruise line & pick a respective cruise ship under Cruises;
-	//TC 1 - Retrieve all the languages offered and store in a List; Display the same
-	//TC 2 - Display passengers, crew & launched year
+	// Pick one cruise line & pick a respective cruise ship under Cruises;
+	// TC 1 - Retrieve all the languages offered and store in a List; Display
+	// the same
+	// TC 2 - Display passengers, crew & launched year
 	private WebDriver driver;
 
 	@BeforeClass
 	public void setUp() {
 		driver = invokeBrowser();
-		openBrowser("https://www.tripadvisor.in");
+		openBrowser("websiteURL");
 	}
-	
-	@Test(priority=1, dataProvider="cruiseData")
-	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
-		logger = report.createTest("Cruises Details Test");
+
+	/******** Verify that search button is deactivated when cruise is not selected ********/
+	@Test
+	public void clickSearchTest() {
+		logger = report.createTest("Click Search Test");
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
 		waitForDocumentReady(20);
+		LocationResultsPage locationResultsPage = new LocationResultsPage(
+				driver, logger);
+		locationResultsPage.clickLocation();
+		switchToNewTab();
+		waitForDocumentReady(20);
+		locationResultsPage.clickHolidayHomes();
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
-
 		holidayHomesPage.clickCruise();
 		waitForDocumentReady(20);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		try {
+			Assert.assertFalse(cruisesPage.isSearchButtonClicked());
+			reportPass("Click Search Test Passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+
+	/******** Verify that ship dropdown is not activated until line is selected ********/
+	@Test(dependsOnMethods="clickSearchTest")
+	public void verifyShipDropDownTest(){
+		logger = report.createTest("Verify ShipDropDown Not Selected Test");
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		try {
+			Assert.assertFalse(cruisesPage.isShipDropdownActivated());
+			reportPass("Verify ShipDropDown Not Selected Test Passed");
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
+	
+	/******** Verify that required cruise line and ship are selected ********/
+	@Test(dependsOnMethods="verifyShipDropDownTest", dataProvider="cruiseData")
+	public void verifyCruiseSelected(String cruiseLine, String cruiseShip){
+		logger = report.createTest("Verify Cruise Line and Ship are Selected Test: "+ cruiseShip);
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
+		try {
+			Assert.assertTrue(cruisesPage.isLineSelected(cruiseLine));
+			Assert.assertTrue(cruisesPage.isShipSelected(cruiseShip));
+			reportPass("Verify Cruise Line and Ship are Selected Test Passed: "+ cruiseShip);
+		} catch (AssertionError e) {
+			reportFail(e.getMessage());
+		}
+	}
 	
+	/******** Verify that cruise ship details are extracted from particular cruise ********/
+	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
+	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
+		logger = report.createTest("Cruises Details Test: "+ cruiseShip);
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		cruisesPage.searchCruise(cruiseLine, cruiseShip);
+		cruisesPage.clickSearch();
 		switchToNewTab();
-		
-		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver, logger);
+		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
+				logger);
 		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();
-		String[][] data = new String[1][cruiseDetails.length];
-		for(int i=0;i<cruiseDetails.length;++i){
-			data[0][i]=cruiseDetails[i];
-		}
+		switchToPrevTab();
+
 		try {
-			Assert.assertEquals(3,cruiseDetails.length);
+			Assert.assertEquals(3, cruiseDetails.length);
+			cruiseReviewPage.writeExcelCruiseDetails(cruiseDetails, cruiseShip);
+			reportPass("Cruises Details Test Passed: " + cruiseShip);
 		} catch (AssertionError e) {
 			reportFail(e.getMessage());
 		}
-		FileIO.writeExcel(data, "CruiseDetails", new String[]{"No of Passengers", "No of Crew", "Launch Year"});
+
 	}
-	
-	@Test(priority=2)
-	public void cruiseLanguagesTest(){
-		logger = report.createTest("Cruises Languages Test");
-		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver, logger);
+
+	/******** Verify that cruise ship languages are extracted from particular cruise ********/
+	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
+	public void cruiseLanguagesTest(String cruiseLine, String cruiseShip) {
+		logger = report.createTest("Cruises Languages Test: "+ cruiseShip);
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		cruisesPage.searchCruise(cruiseLine, cruiseShip);
+		cruisesPage.clickSearch();
+		switchToNewTab();
+		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
+				logger);
 		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
-		FileIO.writeExcel(cruiseLanguages, "CruiseLanguages", "Languages");
+		switchToPrevTab();
 		try {
-			Assert.assertTrue(cruiseLanguages.length>0);
+			Assert.assertTrue(cruiseLanguages.length > 0);
+			cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip);
+			reportPass("Cruises Languages Test Passed: " + cruiseShip);
 		} catch (AssertionError e) {
 			reportFail(e.getMessage());
 		}
 	}
-	
+
 	@DataProvider
 	public Object[][] cruiseData() throws IOException {
 		HashMap<String, ArrayList<String>> dataMap = FileIO
@@ -88,11 +145,11 @@ public class CruisesTest extends BaseUI {
 		}
 		return data;
 	}
-	
+
 	@AfterClass
 	public void afterTest() {
 		driver.quit();
 		report.flush();
 	}
-	
+
 }
