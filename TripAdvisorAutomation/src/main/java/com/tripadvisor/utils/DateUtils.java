@@ -1,13 +1,12 @@
 package com.tripadvisor.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtils {
 	public static String getTimeStamp(){
-		Date date = new Date();
-		String timeStamp = date.toString().replaceAll(":| ", "_");
-		return timeStamp;
+		return new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 	}
 	
 	public static String[] getCheckInDate(){

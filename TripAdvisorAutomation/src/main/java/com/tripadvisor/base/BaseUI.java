@@ -29,7 +29,6 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.tripadvisor.utils.DateUtils;
-import com.tripadvisor.utils.ExtentReportManager;
 import com.tripadvisor.utils.FileIO;
 
 public class BaseUI {
@@ -39,20 +38,18 @@ public class BaseUI {
 	public static ExtentTest logger;
 	public static Properties prop;
 	public static String timestamp = DateUtils.getTimeStamp();
-	
+	public static int browser_choice;
+
 	public BaseUI() {
-		report = ExtentReportManager.getReportInstance();
 		prop = FileIO.initProperties();
 	}
 
 	/************** Invoke Browser ****************/
 	public static WebDriver invokeBrowser() {
-		// int choice = getBrowserOption();
-		int choice = 1;
 		try {
-			if (choice == 1) {
+			if (browser_choice == 1) {
 				driver = DriverSetup.getChromeDriver();
-			} else if (choice == 2) {
+			} else if (browser_choice == 2) {
 				driver = DriverSetup.getMSEdgeDriver();
 			} else {
 				driver = DriverSetup.getFirefoxDriver();
@@ -97,7 +94,7 @@ public class BaseUI {
 	public static void switchToNewTab() {
 		ArrayList<String> tabs = new ArrayList<String>(
 				driver.getWindowHandles());
-		driver.switchTo().window(tabs.get(tabs.size()-1));
+		driver.switchTo().window(tabs.get(tabs.size() - 1));
 	}
 
 	/************** Switch to prev tab ****************/
@@ -105,21 +102,20 @@ public class BaseUI {
 		ArrayList<String> tabs = new ArrayList<String>(
 				driver.getWindowHandles());
 		driver.close();
-		driver.switchTo().window(tabs.get(tabs.size()-2));
+		driver.switchTo().window(tabs.get(tabs.size() - 2));
 	}
 
 	/************** Get list of web elements ****************/
 	public static List<WebElement> getListOfElements(By locator) {
 		List<WebElement> list = null;
-		try{
-		WebDriverWait wait = new WebDriverWait(driver, 20);
-		wait.until(ExpectedConditions.presenceOfElementLocated(locator));
-		}catch(NoSuchElementException e){
-		}catch(Exception e){
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, 20);
+			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+		} catch (NoSuchElementException e) {
+		} catch (Exception e) {
 			reportFail(e.getMessage());
 		}
 		list = driver.findElements(locator);
-		logger.log(Status.INFO, "Got list of elements : "+locator);
 		return list;
 	}
 
@@ -140,7 +136,6 @@ public class BaseUI {
 			WebDriverWait wait = new WebDriverWait(driver, 20);
 			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
 			driver.findElement(locator).sendKeys(text);
-			reportPass("Successfully sent text to: " + locator);
 		} catch (Exception e) {
 			e.printStackTrace();
 			reportFail(e.getMessage());
@@ -153,7 +148,6 @@ public class BaseUI {
 		try {
 			WebElement element = fluentWait(locator, 20);
 			text = element.getText();
-			reportPass("Successfully got text from: " + locator);
 		} catch (Exception e) {
 			e.printStackTrace();
 			reportFail(e.getMessage());
@@ -167,7 +161,6 @@ public class BaseUI {
 			new WebDriverWait(driver, timeout).until(ExpectedConditions
 					.elementToBeClickable(locator));
 			driver.findElement(locator).click();
-			reportPass("Element successfully clicked: " + locator);
 		} catch (Exception e) {
 			e.printStackTrace();
 			reportFail(e.getMessage());
@@ -181,9 +174,7 @@ public class BaseUI {
 					.elementToBeClickable(locator));
 			Actions action = new Actions(driver);
 			action.moveToElement(driver.findElement(locator)).build().perform();
-			// action.moveByOffset(0, 10).build().perform();
 			action.click(driver.findElement(locator)).build().perform();
-			reportPass("Element successfully clicked: " + locator);
 		} catch (Exception e) {
 			e.printStackTrace();
 			reportFail(e.getMessage());
@@ -199,17 +190,16 @@ public class BaseUI {
 			jse.executeScript("arguments[0].scrollIntoView(true);",
 					driver.findElement(locator));
 			jse.executeScript("arguments[0].click", driver.findElement(locator));
-			reportPass("Element successfully clicked: " + locator);
 		} catch (Exception e) {
 			e.printStackTrace();
 			reportFail(e.getMessage());
 		}
 	}
 
+	/************** Switch to another frame ****************/
 	public void switchToFrame(By locator) {
 		WebDriverWait wait = new WebDriverWait(driver, 20);
 		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(locator));
-		// driver.switchTo().frame(driver.findElement(locator));
 	}
 
 	/************** Move to an element with Actions ****************/
@@ -217,7 +207,6 @@ public class BaseUI {
 		try {
 			Actions action = new Actions(driver);
 			action.moveToElement(driver.findElement(locator)).build().perform();
-			reportPass("Moved to element: " + locator);
 		} catch (Exception e) {
 			e.printStackTrace();
 			reportFail(e.getMessage());
@@ -260,41 +249,33 @@ public class BaseUI {
 	/**************** Get By locator using locator key ****************/
 	public static By getLocator(String locatorKey) {
 		if (locatorKey.endsWith("_id")) {
-			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
 			return By.id(prop.getProperty(locatorKey));
 		}
 		if (locatorKey.endsWith("_name")) {
-			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
 			return (By.name(prop.getProperty(locatorKey)));
 		}
 		if (locatorKey.endsWith("_className")) {
-			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
 			return (By.className(prop.getProperty(locatorKey)));
 		}
 		if (locatorKey.endsWith("_xpath")) {
-			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
 			return (By.xpath(prop.getProperty(locatorKey)));
 		}
 		if (locatorKey.endsWith("_css")) {
-			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
 			return (By.cssSelector(prop.getProperty(locatorKey)));
 		}
 		if (locatorKey.endsWith("_linkText")) {
-			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
 			return (By.linkText(prop.getProperty(locatorKey)));
 		}
 		if (locatorKey.endsWith("_partialLinkText")) {
-			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
 			return (By.partialLinkText(prop.getProperty(locatorKey)));
 		}
 		if (locatorKey.endsWith("_tagName")) {
-			logger.log(Status.INFO, "Locator key is valid: " + locatorKey);
 			return (By.tagName(prop.getProperty(locatorKey)));
 		}
 		reportFail("Failing test case, Invalid locator key: " + locatorKey);
 		return null;
 	}
-	
+
 	/************** Take screenshot ****************/
 	public static void takeScreenShot(String filepath) {
 		TakesScreenshot takeScreenShot = (TakesScreenshot) driver;

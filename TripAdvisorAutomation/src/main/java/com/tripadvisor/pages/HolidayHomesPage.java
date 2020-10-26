@@ -5,6 +5,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -41,6 +42,8 @@ public class HolidayHomesPage extends BaseUI {
 	By check_in_out_filter = getLocator("checkInOutFilter_xpath");
 	By check_in_text = getLocator("checkInText_xpath");
 	By check_out_text = getLocator("checkOutText_xpath");
+	By hotel_match = getLocator("hotelMatch_xpath");
+	By sort_by_options=getLocator("sortByOptions_xpath");
 
 	public ExtentTest logger;
 	public WebDriver driver;
@@ -73,25 +76,31 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "CheckOut date is entered");
 	}
 
-	public void setGuests() {
+	public void setGuests(int guestNo) {
 		clickOn(guest_button, 20);
 		String num;
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < guestNo; i++) {
 			num = driver.findElement(guest_number).getAttribute("value");
 			int guest_num = Integer.parseInt(num.substring(0, 1));
-			if (guest_num < 4) {
+			if (guest_num < guestNo) {
 				clickOn(guest_add, 20);
 			} else {
 				break;
 			}
 		}
 		clickOn(apply_button, 20);
-		logger.log(Status.INFO, "Number of guests is set to 4+");
+		logger.log(Status.INFO, "Number of guests is set to "+guestNo+"+");
 	}
 
-	public void sortByRating() {
+	public void sortBy(String sortBy) {
 		clickAction(sort_dropdown, 10);
-		clickOn(traveller_rating, 10);
+		List<WebElement> sortOptions = getListOfElements(sort_by_options);
+		for(WebElement option: sortOptions){
+			if(option.getText().contains(sortBy)){
+				option.click();
+				break;
+			}
+		}
 		logger.log(Status.INFO, "Sorted by Travellor Rating");
 	}
 
@@ -101,6 +110,11 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Selected Elevator/Lift Amenity");
 	}
 
+	public void waitForHotelsLoaded(){
+		new WebDriverWait(driver, 2)
+		.until(webDriver -> ((getText(hotel_match).contains("Lift"))));
+	}
+	
 	public String[] getHotelNames() {
 		String[] hotel_names = new String[5];
 		for (int i = 0; i < 5; i++) {
@@ -144,10 +158,14 @@ public class HolidayHomesPage extends BaseUI {
 	}
 
 	public boolean isFilterPresent() {
+		boolean result;
 		int noOfFilters = driver.findElements(applied_filters).size();
 		if (noOfFilters == 0)
-			return false;
-		return true;
+			result = false;
+		else
+			result = true;
+		logger.log(Status.INFO, "Is any filter present: " + result);
+		return result;
 	}
 
 	public void clickBookNow() {
@@ -164,43 +182,60 @@ public class HolidayHomesPage extends BaseUI {
 	}
 
 	public boolean verifyCheckIn() {
+		boolean result = true;
 		String[] checkinDate = DateUtils.getCheckInDate();
 		String[] checkin = getText(checkin_date).split("/");
 		for (int i = 0; i < checkinDate.length; ++i)
 			if (!checkin[i].equals(checkinDate[i]))
-				return false;
-		return true;
+				result = false;
+		logger.log(Status.INFO, "Checkin date is correct: " + result);
+		return result;
 	}
 
 	public boolean verifyCheckOut() {
+		boolean result = true;
 		String[] checkoutDate = DateUtils.getCheckOutDate();
 		String[] checkout = getText(checkout_date).split("/");
 		for (int i = 0; i < checkoutDate.length; ++i)
 			if (!checkout[i].equals(checkoutDate[i]))
-				return false;
-		return true;
+				result = false;
+		logger.log(Status.INFO, "Checkout date is correct: " + result);
+		return result;
 	}
 
 	public boolean verifyElevatorSelected() {
+		boolean result;
 		int noOfFilters = driver.findElements(applied_filters).size();
 		if (noOfFilters == 2)
-			return true;
-		return false;
+			result = true;
+		else
+			result = false;
+		logger.log(Status.INFO, "Is elevator selected: " + result);
+		return result;
 	}
 
 	public boolean isShowPricesPresent() {
+		boolean result;
 		if (isElementPresent(show_price, 2))
-			return true;
-		return false;
+			result = true;
+		else
+			result = false;
+		logger.log(Status.INFO, "Is 'Show Prices' button present: " + result);
+		return result;
 	}
 
 	public boolean isBookNowPresent() {
+		boolean result;
 		if (isElementPresent(book_now, 2))
-			return true;
-		return false;
+			result = true;
+		else
+			result = false;
+		logger.log(Status.INFO, "Is 'Book Now' button present: " + result);
+		return result;
 	}
 
 	public boolean verifyCheckInOutFilter() {
+		boolean result;
 		String checkIn = getText(check_in_text);
 		String checkInFilter = getText(check_in_out_filter).split("-")[0]
 				.trim();
@@ -208,7 +243,11 @@ public class HolidayHomesPage extends BaseUI {
 		String checkOutFilter = getText(check_in_out_filter).split("-")[1]
 				.trim();
 		if (checkIn.equals(checkInFilter) && checkOut.equals(checkOutFilter))
-			return true;
-		return false;
+			result = true;
+		else
+			result = false;
+		logger.log(Status.INFO, "Is Checkin and Checkout filter correct: "
+				+ result);
+		return result;
 	}
 }

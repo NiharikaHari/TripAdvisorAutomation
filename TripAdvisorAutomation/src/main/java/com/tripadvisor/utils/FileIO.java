@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -69,7 +70,11 @@ public class FileIO {
 			rowData = new ArrayList<>();
 			while (cellIterator.hasNext()) {
 				Cell cell = cellIterator.next();
-				rowData.add(cell.getStringCellValue());
+				CellType type = cell.getCellTypeEnum();
+				if(type.equals(CellType.STRING))
+					rowData.add(cell.getStringCellValue());
+				else if(type.equals(CellType.NUMERIC))
+					rowData.add(""+(int)cell.getNumericCellValue());
 			}
 			data.put("" + (rowNum), rowData);
 			rowNum++;

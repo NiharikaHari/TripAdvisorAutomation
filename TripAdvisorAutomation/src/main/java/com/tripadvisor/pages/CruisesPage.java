@@ -6,6 +6,7 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -37,6 +38,8 @@ public class CruisesPage extends BaseUI {
 
 	public void searchCruise(String cruiseLine, String cruiseShip) {
 
+		driver.navigate().refresh();
+		
 		clickOn(line_dropdown, 10);
 		List<WebElement> line_options = getListOfElements(cruise_line_options);
 		for (WebElement option : line_options) {
@@ -53,6 +56,14 @@ public class CruisesPage extends BaseUI {
 				break;
 			}
 		}
+		
+		new WebDriverWait(driver, 2)
+		.until(webDriver -> (getText(cruise_line_placeholder).equals(cruiseLine)));
+		new WebDriverWait(driver, 2)
+		.until(webDriver -> (getText(cruise_ship_placeholder).equals(cruiseShip)));
+		
+		logger.log(Status.INFO, "Searched for cruise line: '" + cruiseLine
+				+ "' and cruise ship: '" + cruiseShip+"'");
 	}
 
 	public void clickSearch() {
@@ -62,46 +73,62 @@ public class CruisesPage extends BaseUI {
 	}
 
 	public boolean isShipDropdownActivated() {
-		if(isElementPresent(ship_dropdown, 1))
-			return true;
-		return false;
+		boolean result;
+		if (isElementPresent(ship_dropdown, 1))
+			result = true;
+		else
+			result = false;
+		logger.log(Status.INFO, "Ship drop down is present: " + result);
+		return result;
 	}
 
 	public boolean isShipSelected(String cruiseShip) {
+		boolean result;
 		if (getText(cruise_ship_placeholder).equals(cruiseShip))
-			return true;
-		return false;
-
+			result = true;
+		else
+			result = false;
+		logger.log(Status.INFO, "Ship '" + cruiseShip + "' is selected: "
+				+ result);
+		return result;
 	}
-	
+
 	public boolean isLineDropdownPresent() {
-		clickOn(line_dropdown, 10);
-		if (isElementPresent(cruise_line_options, 10))
-			return false;
-		return false;
+		boolean result;
+		if (isElementPresent(line_dropdown, 1))
+			result = true;
+		else
+			result = false;
+		logger.log(Status.INFO, "Line drop down is present: " + result);
+		return result;
 
 	}
-	
+
 	public boolean isLineSelected(String cruiseLine) {
+		boolean result;
 		if (getText(cruise_line_placeholder).equals(cruiseLine))
-			return true;
-		return false;
+			result = true;
+		else
+			result = false;
+		logger.log(Status.INFO, "Ship '" + cruiseLine + "' is selected: "
+				+ result);
+		return result;
 
 	}
 
 	public boolean isSearchButtonClicked() {
+		boolean result;
 		ArrayList<String> tabs1 = new ArrayList<String>(
 				driver.getWindowHandles());
 		driver.findElement(search_button).click();
 		ArrayList<String> tabs2 = new ArrayList<String>(
 				driver.getWindowHandles());
 		if (tabs1.size() == tabs2.size())
-			return false;
-		return true;
+			result = false;
+		else
+			result = true;
+		logger.log(Status.INFO, "Search button is activated: " + result);
+		return result;
 	}
-
-
-	
-
 
 }

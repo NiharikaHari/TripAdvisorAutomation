@@ -50,24 +50,28 @@ public class CruiseReviewsPage extends BaseUI {
 		return arr;
 	}
 
-	public void writeExcelCruiseDetails(String[] cruiseDetails, String cruiseShip) {
-		String[][] data = new String[1][cruiseDetails.length+1];
-		data[0][0]="";
+	public void writeExcelCruiseDetails(String[] cruiseDetails,
+			String cruiseShip) {
+		String[][] data = new String[1][cruiseDetails.length + 1];
+		data[0][0] = "";
 		for (int i = 0; i < cruiseDetails.length; ++i) {
-			data[0][i+1] = cruiseDetails[i];
+			data[0][i + 1] = cruiseDetails[i];
 		}
-		FileIO.writeExcel(data, "CruiseDetails", new String[] {
-				cruiseShip, "No of Passengers", "No of Crew", "Launch Year" });
+		FileIO.writeExcel(data, "CruiseDetails", new String[] { cruiseShip,
+				"No of Passengers", "No of Crew", "Launch Year" });
+		logger.log(Status.INFO, "Written cruise details to excel: "+cruiseShip);
 	}
 
-	public void writeExcelLanguages(String[] languages, String cruiseShip){
+	public void writeExcelLanguages(String[] languages, String cruiseShip) {
 		String[][] data = new String[languages.length][2];
 		for (int i = 0; i < languages.length; ++i) {
 			data[i][1] = languages[i];
 		}
-		FileIO.writeExcel(data, "CruiseLanguages", new String[]{cruiseShip, "Languages"});
+		FileIO.writeExcel(data, "CruiseLanguages", new String[] { cruiseShip,
+				"Languages" });
+		logger.log(Status.INFO, "Written cruise languages list to excel: "+cruiseShip);
 	}
-	
+
 	public String[] getLanguagesList() {
 		List<WebElement> lang;
 		if (isElementPresent(more, 3)) {
@@ -81,7 +85,7 @@ public class CruiseReviewsPage extends BaseUI {
 			WebElement langEle = lang.get(i + 1);
 			languages[i] = langEle.getText();
 		}
-		logger.log(Status.INFO, "Obtained cruise languages");
+		logger.log(Status.INFO, "Obtained cruise languages list");
 		return languages;
 	}
 }
