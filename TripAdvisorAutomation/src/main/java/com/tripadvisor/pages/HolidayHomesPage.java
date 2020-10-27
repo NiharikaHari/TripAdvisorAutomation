@@ -2,6 +2,7 @@ package com.tripadvisor.pages;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,6 +14,9 @@ import com.tripadvisor.base.BaseUI;
 import com.tripadvisor.utils.DateUtils;
 
 public class HolidayHomesPage extends BaseUI {
+
+	public ExtentTest logger;
+	public WebDriver driver;
 
 	By show_price = getLocator("showPrice_xpath");
 	By check_in = getLocator("checkIn_xpath");
@@ -43,10 +47,7 @@ public class HolidayHomesPage extends BaseUI {
 	By check_in_text = getLocator("checkInText_xpath");
 	By check_out_text = getLocator("checkOutText_xpath");
 	By hotel_match = getLocator("hotelMatch_xpath");
-	By sort_by_options=getLocator("sortByOptions_xpath");
-
-	public ExtentTest logger;
-	public WebDriver driver;
+	By sort_by_options = getLocator("sortByOptions_xpath");
 
 	public HolidayHomesPage() {
 	}
@@ -58,27 +59,46 @@ public class HolidayHomesPage extends BaseUI {
 	public HolidayHomesPage(WebDriver driver, ExtentTest logger) {
 		this.driver = driver;
 		this.logger = logger;
+		log = LogManager
+				.getLogger(com.tripadvisor.pages.HolidayHomesPage.class);
 	}
 
 	public void setCheckIn() {
+		log.debug("Clicking on check-in");
 		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_in, 20);
+		log.info("Clicked on check-in");
+		log.debug("Getting list of all future dates from calendar");
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
+		log.info("Got list of all future dates from calendar");
+		log.debug("Clicking on tomorrow's date for check-in");
 		dates.get(0).click();
+		log.info("Clicked on tomorrow's date for check-in");
 		logger.log(Status.INFO, "CheckIn date is entered");
+		log.info("CheckIn date is entered");
 	}
 
 	public void setCheckOut() {
+		log.debug("Clicking on check-out");
 		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_out, 20);
+		log.info("Clicked on check-out");
+		log.debug("Getting list of all future dates from calendar");
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
+		log.info("Got list of all future dates from calendar");
+		log.debug("Clicking on date five days after tomorrow for check-out");
 		dates.get(4).click();
+		log.info("Clicked on date five days after tomorrow for check-out");
 		logger.log(Status.INFO, "CheckOut date is entered");
+		log.info("CheckOut date is entered");
 	}
 
 	public void setGuests(int guestNo) {
+		log.debug("Clicking on guest button");
 		clickOn(guest_button, 20);
+		log.info("Clicked on guest button");
 		String num;
+		log.debug("Setting number of guests to: " + guestNo);
 		for (int i = 0; i < guestNo; i++) {
 			num = driver.findElement(guest_number).getAttribute("value");
 			int guest_num = Integer.parseInt(num.substring(0, 1));
@@ -89,153 +109,198 @@ public class HolidayHomesPage extends BaseUI {
 			}
 		}
 		clickOn(apply_button, 20);
-		logger.log(Status.INFO, "Number of guests is set to "+guestNo+"+");
+		log.debug("Number of guests is set to " + guestNo + "+");
+		logger.log(Status.INFO, "Number of guests is set to " + guestNo + "+");
 	}
 
 	public void sortBy(String sortBy) {
+		log.debug("Clicking on Sort By dropdown");
 		clickAction(sort_dropdown, 10);
+		log.info("Clicked on Sort By dropdown");
+		log.debug("Get list of sorting options");
 		List<WebElement> sortOptions = getListOfElements(sort_by_options);
-		for(WebElement option: sortOptions){
-			if(option.getText().contains(sortBy)){
+		log.info("Got list of sorting options");
+		log.debug("Selecting '" + sortBy + "' option");
+		for (WebElement option : sortOptions) {
+			if (option.getText().contains(sortBy)) {
 				option.click();
 				break;
 			}
 		}
-		logger.log(Status.INFO, "Sorted by Travellor Rating");
+		log.info("Selected '" + sortBy + "' option");
+		logger.log(Status.INFO, "Sorted by " + sortBy);
 	}
 
 	public void selectLift() {
+		log.debug("Clicking on 'More' amenities");
 		clickOn(more_amenities, 20);
+		log.info("Clicked on 'More' amenities");
+		log.debug("Clicking on Elevator/Lift Access option");
 		clickAction(elevator, 10);
+		log.info("Clicked on Elevator/Lift Access option");
 		logger.log(Status.INFO, "Selected Elevator/Lift Amenity");
 	}
 
-	public void waitForHotelsLoaded(){
-		new WebDriverWait(driver, 2)
-		.until(webDriver -> ((getText(hotel_match).contains("Lift"))));
+	public void waitForHotelsLoaded() {
+		log.debug("Waiting for hotels to get updated");
+		new WebDriverWait(driver, 10).until(webDriver -> ((getText(hotel_match)
+				.contains("Lift"))));
+		log.info("Hotels have been updated");
 	}
-	
+
 	public String[] getHotelNames() {
+		log.debug("Getting names of top 5 hotels");
 		String[] hotel_names = new String[5];
 		for (int i = 0; i < 5; i++) {
 			WebElement hotel_element = getListOfElements(hotel_name).get(i);
 			hotel_names[i] = hotel_element.getText();
 		}
+		log.debug("Obtained names of top 5 hotels");
 		logger.log(Status.INFO, "Obtained names of top 5 hotels");
 		return hotel_names;
 	}
 
 	public String[] getTotalPrices() {
+		log.debug("Getting total price of top 5 hotels");
 		String[] total_prices = new String[5];
 		for (int i = 0; i < 5; i++) {
 			WebElement total_price_element = getListOfElements(total_price)
 					.get(i);
 			total_prices[i] = total_price_element.getText();
 		}
+		log.info("Obtained total price of top 5 hotels");
 		logger.log(Status.INFO, "Obtained total price of top 5 hotels");
 		return total_prices;
 	}
 
 	public String[] getPerNightPrices() {
+		log.debug("Getting price per night of top 5 hotels");
 		String[] night_price = new String[5];
 		for (int i = 0; i < 5; i++) {
 			WebElement night_price_element = getListOfElements(price_per_night)
 					.get(i);
 			night_price[i] = night_price_element.getText();
 		}
+		log.info("Obtained price per night of top 5 hotels");
 		logger.log(Status.INFO, "Obtained price per night of top 5 hotels");
 		return night_price;
 	}
 
 	public void clickCruise() {
+		log.debug("Clicking on 'Cruises' button");
 		clickOn(cruises, 20);
+		log.info("Clicked on 'Cruises' button");
 		logger.log(Status.INFO, "Clicked on 'Cruises' button");
 	}
 
 	public void clickClearFilters() {
-		clickOn(clear_filter, 20);
+		log.debug("Clicking on 'Clear Filters' button");
+		clickAction(clear_filter, 20);
+		log.info("Clicked on 'Clear Filters' button");
 		logger.log(Status.INFO, "Clicked on 'Clear Filters' button");
 	}
 
 	public boolean isFilterPresent() {
 		boolean result;
+		log.debug("Getting number of applied filters");
 		int noOfFilters = driver.findElements(applied_filters).size();
+		log.info("Number of applied filters is: " + noOfFilters);
 		if (noOfFilters == 0)
 			result = false;
 		else
 			result = true;
+		log.info("Is any filter present: " + result);
 		logger.log(Status.INFO, "Is any filter present: " + result);
 		return result;
 	}
 
 	public void clickBookNow() {
+		log.debug("Clicking on 'Book Now' button");
 		clickAction(book_now, 10);
+		log.info("Clicked on 'Book Now' button");
 		logger.log(Status.INFO, "Clicked on 'Book Now' button");
 	}
 
 	public boolean isPastDateNotSelected() {
+		log.debug("Clicking on check-in calendar");
 		if (!isElementPresent(check_in_out_date_future, 1))
 			clickOn(check_in, 20);
+		log.info("Clicked on check-in calendar");
+		log.debug("Clicking on past date");
 		clickOn(check_in_out_date_past, 10);
-		logger.log(Status.INFO, "Checked if past date was selected");
-		return isElementPresent(check_in_out_date_future, 1);
+		log.info("Clicked on past date");
+		boolean result = isElementPresent(check_in_out_date_future, 1);
+		logger.log(Status.INFO, "Is past date not selected: " + result);
+		log.info("Is past date not selected: " + result);
+		return result;
 	}
 
 	public boolean verifyCheckIn() {
 		boolean result = true;
+		log.debug("Checking if check-in date is set to tomorrow");
 		String[] checkinDate = DateUtils.getCheckInDate();
 		String[] checkin = getText(checkin_date).split("/");
 		for (int i = 0; i < checkinDate.length; ++i)
 			if (!checkin[i].equals(checkinDate[i]))
 				result = false;
+		log.info("Check-in date is correct: " + result);
 		logger.log(Status.INFO, "Checkin date is correct: " + result);
 		return result;
 	}
 
 	public boolean verifyCheckOut() {
 		boolean result = true;
+		log.debug("Checking if check-out date is set to 5 days after tomorrow");
 		String[] checkoutDate = DateUtils.getCheckOutDate();
 		String[] checkout = getText(checkout_date).split("/");
 		for (int i = 0; i < checkoutDate.length; ++i)
 			if (!checkout[i].equals(checkoutDate[i]))
 				result = false;
-		logger.log(Status.INFO, "Checkout date is correct: " + result);
+		log.info("Check-out date is correct: " + result);
+		logger.log(Status.INFO, "Check-out date is correct: " + result);
 		return result;
 	}
 
 	public boolean verifyElevatorSelected() {
 		boolean result;
+		log.debug("Finding number of filters applied");
 		int noOfFilters = driver.findElements(applied_filters).size();
 		if (noOfFilters == 2)
 			result = true;
 		else
 			result = false;
+		log.info("Is elevator selected: " + result);
 		logger.log(Status.INFO, "Is elevator selected: " + result);
 		return result;
 	}
 
 	public boolean isShowPricesPresent() {
 		boolean result;
+		log.debug("Checking if 'Show Price' button is present");
 		if (isElementPresent(show_price, 2))
 			result = true;
 		else
 			result = false;
+		log.info("Is 'Show Prices' button present: " + result);
 		logger.log(Status.INFO, "Is 'Show Prices' button present: " + result);
 		return result;
 	}
 
 	public boolean isBookNowPresent() {
 		boolean result;
+		log.debug("Checking if 'Book Now' button is present");
 		if (isElementPresent(book_now, 2))
 			result = true;
 		else
 			result = false;
+		log.info("Is 'Book Now' button present: " + result);
 		logger.log(Status.INFO, "Is 'Book Now' button present: " + result);
 		return result;
 	}
 
 	public boolean verifyCheckInOutFilter() {
 		boolean result;
+		log.debug("Checking if check-in and check-out is correct in filters");
 		String checkIn = getText(check_in_text);
 		String checkInFilter = getText(check_in_out_filter).split("-")[0]
 				.trim();
@@ -246,6 +311,7 @@ public class HolidayHomesPage extends BaseUI {
 			result = true;
 		else
 			result = false;
+		log.debug("Is check-in and check-out is correct in filters: " + result);
 		logger.log(Status.INFO, "Is Checkin and Checkout filter correct: "
 				+ result);
 		return result;

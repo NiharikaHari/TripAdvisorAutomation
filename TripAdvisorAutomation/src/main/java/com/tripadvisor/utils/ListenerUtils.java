@@ -15,8 +15,6 @@ public class ListenerUtils extends TestListenerAdapter {
 	public static ExtentReports extent;
 	public static ExtentTest logger;
 
-	// public static int count =0;
-
 	public void onStart(ITestContext testContext) {
 		extent = ExtentReportManager.getReportInstance();
 	}
@@ -35,8 +33,8 @@ public class ListenerUtils extends TestListenerAdapter {
 
 		String folderName = result.getInstanceName();
 		String testName = result.getName();
-		String filePath = System.getProperty("user.dir") + "/Screenshots/"
-				+ folderName + "/" + testName + "/" + testName + "_Passed";
+		String filePath = System.getProperty("user.dir") + "/TestOutput/Screenshots/"
+				+ folderName + "/" + testName + "/" + testName + "_Passed.png";
 		try {
 			BaseUI.takeScreenShot(filePath);
 			logger.log(
@@ -57,9 +55,9 @@ public class ListenerUtils extends TestListenerAdapter {
 		logger.log(Status.FAIL, result.getThrowable());
 
 		String folderName = result.getInstanceName();
-		String filePath = System.getProperty("user.dir") + "/Screenshots/"
+		String filePath = System.getProperty("user.dir") + "/TestOutput/Screenshots/"
 				+ folderName + "/" + result.getName() + "/" + result.getName()
-				+ "_Failed";
+				+ "_Failed.png";
 		try {
 			BaseUI.takeScreenShot(filePath);
 			logger.log(

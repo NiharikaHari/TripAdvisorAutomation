@@ -17,7 +17,7 @@ public class ExtentReportManager extends BaseUI {
 		htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")
 				+ "/TestOutput/" + repName);
 		htmlReporter.loadXMLConfig(System.getProperty("user.dir")
-				+ "\\extent-config.xml");
+				+ "/src/test/resources/extent-config.xml");
 
 		extent = new ExtentReports();
 
@@ -29,7 +29,7 @@ public class ExtentReportManager extends BaseUI {
 
 		htmlReporter.config().setDocumentTitle("TripAdvisor Test Project");
 		htmlReporter.config()
-				.setReportName("Functional Test Automation Report");
+				.setReportName("Trip Advisor Functional Test Automation Report");
 		htmlReporter.config().setTheme(Theme.DARK);
 		htmlReporter.config().setTimeStampFormat("MMM dd, yyyy HH:mm:ss");
 		htmlReporter.config().enableTimeline(true);

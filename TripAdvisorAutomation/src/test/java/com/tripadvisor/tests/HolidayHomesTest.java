@@ -110,10 +110,10 @@ public class HolidayHomesTest extends BaseUI {
 	}
 
 	/******** Verify desired no of guests is present for first result ********/
-	@Test(dependsOnMethods = "verifyCheckOut")
-	public void verifyGuests() {
+	@Test(dependsOnMethods = "verifyCheckOut", dataProvider = "holidayHomesData")
+	public void verifyGuests(String location, String guestNo, String sortBy) {
 		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
-		boolean verifyGuests = hotelPage.verifyNoOfGuests();
+		boolean verifyGuests = hotelPage.verifyNoOfGuests(guestNo);
 		Assert.assertTrue(verifyGuests);
 	}
 
@@ -154,6 +154,7 @@ public class HolidayHomesTest extends BaseUI {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		holidayHomesPage.setCheckIn();
 		holidayHomesPage.setCheckOut();
+		waitForDocumentReady(10);
 		Assert.assertTrue(holidayHomesPage.isBookNowPresent());
 		Assert.assertFalse(holidayHomesPage.isShowPricesPresent());
 	}
