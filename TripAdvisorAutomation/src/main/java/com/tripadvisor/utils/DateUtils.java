@@ -13,6 +13,9 @@ public class DateUtils {
 		Calendar cal = Calendar.getInstance();
 	    cal.add(Calendar.DAY_OF_MONTH, 1);
 	    String date = String.valueOf(cal.get(Calendar.DATE));
+	    if(date.length()==1){
+	    	date = "0"+date;
+	    }
 	    String month = String.valueOf(cal.get(Calendar.MONTH)+1);   
 	    String year = String.valueOf(cal.get(Calendar.YEAR)).substring(2);   	    
 		return new String[]{date, month, year};
@@ -22,6 +25,9 @@ public class DateUtils {
 		Calendar cal = Calendar.getInstance();
 	    cal.add(Calendar.DAY_OF_MONTH, 6);  
 	    String date = String.valueOf(cal.get(Calendar.DATE));
+	    if(date.length()==1){
+	    	date = "0"+date;
+	    }
 	    String month = String.valueOf(cal.get(Calendar.MONTH)+1);
 	    String year = String.valueOf(cal.get(Calendar.YEAR)).substring(2);   	   	    
 		return new String[]{date, month, year};

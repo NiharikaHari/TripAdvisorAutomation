@@ -10,6 +10,8 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -20,7 +22,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -37,8 +38,11 @@ public class BaseUI {
 	public static ExtentReports report;
 	public static ExtentTest logger;
 	public static Properties prop;
-	public static String timestamp = DateUtils.getTimeStamp();
 	public static int browser_choice;
+	public static String timestamp = DateUtils.getTimeStamp();
+	public static Logger log;
+	public static Logger logBase = LogManager
+			.getLogger(com.tripadvisor.base.BaseUI.class);
 
 	public BaseUI() {
 		prop = FileIO.initProperties();
@@ -46,6 +50,7 @@ public class BaseUI {
 
 	/************** Invoke Browser ****************/
 	public static WebDriver invokeBrowser() {
+		logBase.debug("Opening browser");
 		try {
 			if (browser_choice == 1) {
 				driver = DriverSetup.getChromeDriver();
@@ -54,8 +59,10 @@ public class BaseUI {
 			} else {
 				driver = DriverSetup.getFirefoxDriver();
 			}
+			logBase.info("Opened browser");
 		} catch (Exception e) {
 			e.printStackTrace();
+			logBase.error("Failed to open browser");
 			reportFail(e.getMessage());
 		}
 
@@ -64,6 +71,7 @@ public class BaseUI {
 
 	/************** Get browser option from user ****************/
 	public static int getBrowserOption() {
+		logBase.debug("Getting browser choice");
 		int choice = 0;
 		System.out
 				.println("Browser options\n1 - Chrome\n2 - MS Edge \n3 - Firefox\nEnter choice: ");
@@ -76,15 +84,19 @@ public class BaseUI {
 			choice = sc.nextInt();
 		}
 		sc.close();
+		logBase.info("Got browser choice: " + choice);
 		return choice;
 	}
 
 	/************** Open website URL ****************/
 	public static void openBrowser(String websiteUrlKey) {
 		try {
+			logBase.debug("Opening URL");
 			driver.get(prop.getProperty(websiteUrlKey));
+			logBase.info("Opened URL");
 		} catch (Exception e) {
 			e.printStackTrace();
+			logBase.error("Failed to open URL");
 			reportFail(e.getMessage());
 		}
 
@@ -92,17 +104,29 @@ public class BaseUI {
 
 	/************** Switch to new tab ****************/
 	public static void switchToNewTab() {
-		ArrayList<String> tabs = new ArrayList<String>(
-				driver.getWindowHandles());
-		driver.switchTo().window(tabs.get(tabs.size() - 1));
+		try {
+			ArrayList<String> tabs = new ArrayList<String>(
+					driver.getWindowHandles());
+			driver.switchTo().window(tabs.get(tabs.size() - 1));
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Failed to switch to new tab");
+			reportFail(e.getMessage());
+		}
 	}
 
 	/************** Switch to prev tab ****************/
 	public static void switchToPrevTab() {
-		ArrayList<String> tabs = new ArrayList<String>(
-				driver.getWindowHandles());
-		driver.close();
-		driver.switchTo().window(tabs.get(tabs.size() - 2));
+		try {
+			ArrayList<String> tabs = new ArrayList<String>(
+					driver.getWindowHandles());
+			driver.close();
+			driver.switchTo().window(tabs.get(tabs.size() - 2));
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Failed to switch to previous tab");
+			reportFail(e.getMessage());
+		}
 	}
 
 	/************** Get list of web elements ****************/
@@ -113,6 +137,8 @@ public class BaseUI {
 			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
 		} catch (NoSuchElementException e) {
 		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Failed to get list of WebElements");
 			reportFail(e.getMessage());
 		}
 		list = driver.findElements(locator);
@@ -138,6 +164,7 @@ public class BaseUI {
 			driver.findElement(locator).sendKeys(text);
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("Failed to send text to element");
 			reportFail(e.getMessage());
 		}
 	}
@@ -150,6 +177,7 @@ public class BaseUI {
 			text = element.getText();
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("Failed to get text from element");
 			reportFail(e.getMessage());
 		}
 		return text;
@@ -163,6 +191,7 @@ public class BaseUI {
 			driver.findElement(locator).click();
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("Failed to click on element");
 			reportFail(e.getMessage());
 		}
 	}
@@ -173,10 +202,15 @@ public class BaseUI {
 			new WebDriverWait(driver, timeout).until(ExpectedConditions
 					.elementToBeClickable(locator));
 			Actions action = new Actions(driver);
+			JavascriptExecutor jse = (JavascriptExecutor) driver;
+			jse.executeScript("arguments[0].scrollIntoView(true);",
+					driver.findElement(locator));
+			jse.executeScript("window.scrollBy(0,-150)");
 			action.moveToElement(driver.findElement(locator)).build().perform();
 			action.click(driver.findElement(locator)).build().perform();
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("Failed to click on element");
 			reportFail(e.getMessage());
 		}
 	}
@@ -192,45 +226,36 @@ public class BaseUI {
 			jse.executeScript("arguments[0].click", driver.findElement(locator));
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("Failed to click on element");
 			reportFail(e.getMessage());
 		}
 	}
 
 	/************** Switch to another frame ****************/
 	public void switchToFrame(By locator) {
-		WebDriverWait wait = new WebDriverWait(driver, 20);
-		wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(locator));
-	}
-
-	/************** Move to an element with Actions ****************/
-	public static void moveTo(By locator) {
 		try {
-			Actions action = new Actions(driver);
-			action.moveToElement(driver.findElement(locator)).build().perform();
+			WebDriverWait wait = new WebDriverWait(driver, 20);
+			wait.until(ExpectedConditions
+					.frameToBeAvailableAndSwitchToIt(locator));
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("Failed to switch to frame");
 			reportFail(e.getMessage());
 		}
-	}
-
-	/****************** Get All Elements of DropDown ***********************/
-	public List<WebElement> getAllElementsOfDropDown(WebElement webElement) {
-		try {
-			Select select = new Select(webElement);
-			List<WebElement> allElements = select.getOptions();
-			return allElements;
-		} catch (Exception e) {
-			reportFail(e.getMessage());
-		}
-		return null;
 	}
 
 	/************** Wait for document to be in ready state ****************/
 	public static void waitForDocumentReady(int timeout) {
-		new WebDriverWait(driver, timeout)
-				.until(webDriver -> ((JavascriptExecutor) webDriver)
-						.executeScript("return document.readyState").equals(
-								"complete"));
+		try {
+			new WebDriverWait(driver, timeout)
+					.until(webDriver -> ((JavascriptExecutor) webDriver)
+							.executeScript("return document.readyState")
+							.equals("complete"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("Failed to wait for document to be ready");
+			reportFail(e.getMessage());
+		}
 	}
 
 	/************** Fluent wait for NoSuchElementFound Exception **************/
@@ -272,6 +297,7 @@ public class BaseUI {
 		if (locatorKey.endsWith("_tagName")) {
 			return (By.tagName(prop.getProperty(locatorKey)));
 		}
+		log.error("Invalid locator key");
 		reportFail("Failing test case, Invalid locator key: " + locatorKey);
 		return null;
 	}
@@ -288,27 +314,9 @@ public class BaseUI {
 		}
 	}
 
-	/************** Take screenshot on test failure ****************/
-	public static void takeScreenShotOnFailure() {
-		String filepath = System.getProperty("user.dir")
-				+ "/failure-screenshots/" + DateUtils.getTimeStamp() + ".png";
-		takeScreenShot(filepath);
-		try {
-			logger.addScreenCaptureFromPath(filepath);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/************** Report pass test ****************/
-	public static void reportPass(String reportMessage) {
-		logger.log(Status.PASS, reportMessage);
-	}
-
 	/************** Report fail test ****************/
 	public static void reportFail(String reportMessage) {
 		logger.log(Status.FAIL, reportMessage);
-		takeScreenShotOnFailure();
 		Assert.fail("Test case failed: " + reportMessage);
 	}
 

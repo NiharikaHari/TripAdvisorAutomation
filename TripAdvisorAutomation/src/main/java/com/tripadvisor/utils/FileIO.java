@@ -51,7 +51,7 @@ public class FileIO {
 		HashMap<String, ArrayList<String>> data = new HashMap<>();
 
 		read_file = new FileInputStream(System.getProperty("user.dir")
-				+ "/src/test/resources/testdata/TestData.xlsx");
+				+ prop.getProperty("testData_path"));
 		workbook = new XSSFWorkbook(read_file);
 		worksheet = workbook.getSheet(testName);
 		Iterator<Row> rowIterator = worksheet.iterator();
@@ -103,7 +103,7 @@ public class FileIO {
 
 	public static void writeExcel(String[][] data, String sheetName,
 			String headings[]) {
-		String filePath = System.getProperty("user.dir") + "/TestOutput/Output_"+BaseUI.timestamp+".xlsx";
+		String filePath = System.getProperty("user.dir") + "/TestOutput/Output-"+BaseUI.timestamp+".xlsx";
 		file = new File(filePath);
 
 		boolean fileExists = false;
