@@ -51,5 +51,12 @@ public class LocationResultsPage extends BaseUI {
 		log.info("Clicked on Holiday Homes button");
 		logger.log(Status.INFO, "Clicked on Holiday Homes");
 	}
+	
+	public String getTitle(){
+		log.debug("Getting title of location results page");
+		String title = driver.getTitle();
+		log.info("Title of location results page is: "+title);
+		return title;
+	}
 
 }

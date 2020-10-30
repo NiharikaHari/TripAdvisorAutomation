@@ -36,6 +36,13 @@ public class CruiseReviewsPage extends BaseUI {
 		this.logger = logger;
 		log=LogManager.getLogger(com.tripadvisor.pages.CruiseReviewsPage.class);
 	}
+	
+	public String getTitle(){
+		log.debug("Getting title of Cruises Reviews page");
+		String title = driver.getTitle();
+		log.info("Title of Cruises Reviews page is: "+title);
+		return title;
+	}
 
 	public String[] getCruiseDetails() {
 		log.debug("Getting number of passengers");
@@ -86,6 +93,7 @@ public class CruiseReviewsPage extends BaseUI {
 
 	public String[] getLanguagesList() {
 		List<WebElement> lang;
+		log.debug("Checking if 'More' button is present");
 		if (isElementPresent(more, 3)) {
 			log.debug("Clicking on 'more' button");
 			clickOn(more, 10);
