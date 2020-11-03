@@ -49,7 +49,6 @@ public class ListenerUtils extends TestListenerAdapter {
 
 	public void onTestFailure(ITestResult result) {
 
-		logger = extent.createTest(result.getName());
 		logger.log(Status.FAIL,
 				MarkupHelper.createLabel(result.getName(), ExtentColor.RED));
 		logger.log(Status.FAIL, result.getThrowable());
