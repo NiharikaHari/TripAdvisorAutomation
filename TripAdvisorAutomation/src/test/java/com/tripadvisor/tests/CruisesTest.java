@@ -27,13 +27,15 @@ public class CruisesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
+		if(browser_choice!=1 && browser_choice!=2 && browser_choice!=3)
+			browser_choice=getBrowserOption();
 		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
 
-	/******** Verify that search button is deactivated when cruise is not selected ********/
+	/******** Verify page title of cruises page ********/
 	@Test
-	public void clickSearchTest() {
+	public void verifyCruisesPageTitleTest(){
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
 		waitForDocumentReady(20);
@@ -47,27 +49,47 @@ public class CruisesTest extends BaseUI {
 		holidayHomesPage.clickCruise();
 		waitForDocumentReady(20);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
-		Assert.assertFalse(cruisesPage.isSearchButtonClicked());
+		Assert.assertEquals(cruisesPage.getTitle(), "Cruises - Cheap Cruise Holidays: 2020 Destinations & Ports - Tripadvisor");
+	}
+	
+	/******** Verify that search button is deactivated when cruise is not selected ********/
+	@Test(dependsOnMethods = "verifyCruisesPageTitleTest")
+	public void verifySearchNotActivatedTest() {
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		Assert.assertFalse(cruisesPage.isSearchButtonActivated());
 	}
 
 	/******** Verify that ship dropdown is not activated until line is selected ********/
-	@Test(dependsOnMethods = "clickSearchTest")
-	public void verifyShipDropDownTest() {
+	@Test(dependsOnMethods = "verifySearchNotActivatedTest")
+	public void verifyShipDropDownNotActivatedTest() {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		Assert.assertFalse(cruisesPage.isShipDropdownActivated());
 	}
 
 	/******** Verify that required cruise line and ship are selected ********/
-	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
-	public void verifyCruiseSelected(String cruiseLine, String cruiseShip) {
+	@Test(dependsOnMethods = "verifyShipDropDownNotActivatedTest", dataProvider = "cruiseData")
+	public void verifyCruiseIsSelectedTest(String cruiseLine, String cruiseShip) {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 		Assert.assertTrue(cruisesPage.isLineSelected(cruiseLine));
 		Assert.assertTrue(cruisesPage.isShipSelected(cruiseShip));
 	}
+	
+	@Test(dependsOnMethods = "verifyShipDropDownNotActivatedTest", dataProvider = "cruiseData")
+	public void verifyCruiseShipPageTitleTest(String cruiseLine, String cruiseShip){
+		CruisesPage cruisesPage = new CruisesPage(driver, logger);
+		cruisesPage.searchCruise(cruiseLine, cruiseShip);
+		cruisesPage.clickSearch();
+		switchToNewTab();
+		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
+				logger);
+		waitForDocumentReady(20);
+		Assert.assertEquals(cruiseReviewPage.getTitle(), cruiseShip+" - Deck Plans, Reviews & Pictures - Tripadvisor");
+		switchToPrevTab();
+	}
 
 	/******** Verify that cruise ship details are extracted from particular cruise ********/
-	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
+	@Test(dependsOnMethods = "verifyCruiseShipPageTitleTest", dataProvider = "cruiseData")
 	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
@@ -83,7 +105,7 @@ public class CruisesTest extends BaseUI {
 	}
 
 	/******** Verify that cruise ship languages are extracted from particular cruise ********/
-	@Test(dependsOnMethods = "verifyShipDropDownTest", dataProvider = "cruiseData")
+	@Test(dependsOnMethods = "verifyCruiseShipPageTitleTest", dataProvider = "cruiseData")
 	public void cruiseLanguagesTest(String cruiseLine, String cruiseShip) {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);

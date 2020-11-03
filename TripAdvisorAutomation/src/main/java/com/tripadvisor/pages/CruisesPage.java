@@ -38,6 +38,13 @@ public class CruisesPage extends BaseUI {
 		this.logger = logger;
 		log=LogManager.getLogger(com.tripadvisor.pages.CruisesPage.class);
 	}
+	
+	public String getTitle(){
+		log.debug("Getting title of Cruises page");
+		String title = driver.getTitle();
+		log.info("Title of Cruises page is: "+title);
+		return title;
+	}
 
 	public void searchCruise(String cruiseLine, String cruiseShip) {
 
@@ -146,7 +153,7 @@ public class CruisesPage extends BaseUI {
 
 	}
 
-	public boolean isSearchButtonClicked() {
+	public boolean isSearchButtonActivated() {
 		boolean result;
 		log.debug("Getting window handles");
 		ArrayList<String> tabs1 = new ArrayList<String>(
