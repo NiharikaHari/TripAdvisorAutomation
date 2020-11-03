@@ -27,10 +27,13 @@ public class CruisesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
+		if(browser_choice!=1 && browser_choice!=2 && browser_choice!=3)
+			browser_choice=getBrowserOption();
 		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
 
+	/******** Verify page title of cruises page ********/
 	@Test
 	public void verifyCruisesPageTitleTest(){
 		HomePage homePage = new HomePage(driver, logger);

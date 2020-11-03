@@ -72,10 +72,11 @@ public class BaseUI {
 	/************** Get browser option from user ****************/
 	public static int getBrowserOption() {
 		logBase.debug("Getting browser choice");
-		int choice = 0;
+		int choice = 1;
 		System.out
 				.println("Browser options\n1 - Chrome\n2 - MS Edge \n3 - Firefox\nEnter choice: ");
 		Scanner sc = new Scanner(System.in);
+		
 		choice = sc.nextInt();
 		while (choice != 1 && choice != 2 && choice != 3) {
 			System.out.println("Invalid choice entered.");

@@ -27,7 +27,8 @@ public class HolidayHomesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
-		BaseUI.browser_choice=BaseUI.getBrowserOption();
+		if(browser_choice!=1 && browser_choice!=2 && browser_choice!=3)
+			browser_choice=getBrowserOption();
 		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
