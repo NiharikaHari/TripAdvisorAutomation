@@ -39,6 +39,7 @@ public class CruisesPage extends BaseUI {
 		log=LogManager.getLogger(com.tripadvisor.pages.CruisesPage.class);
 	}
 	
+	/*********** Get title of the current page ***********/
 	public String getTitle(){
 		log.debug("Getting title of Cruises page");
 		String title = driver.getTitle();
@@ -46,8 +47,8 @@ public class CruisesPage extends BaseUI {
 		return title;
 	}
 
+	/*********** Search for cruise line and cruise ship ***********/
 	public void searchCruise(String cruiseLine, String cruiseShip) {
-
 		driver.navigate().refresh();
 		log.debug("Clicking on cruise line dropdown");
 		clickOn(line_dropdown, 10);
@@ -63,7 +64,6 @@ public class CruisesPage extends BaseUI {
 			}
 		}
 		log.info("Clicked on '"+cruiseLine+"' option");
-		
 		log.debug("Clicking on cruise ship dropdown");
 		clickOn(ship_dropdown, 10);
 		log.info("Clicked on cruise ship dropdown");
@@ -78,18 +78,17 @@ public class CruisesPage extends BaseUI {
 			}
 		}
 		log.info("Clicked on '"+cruiseShip+"' option");
-		
 		new WebDriverWait(driver, 2)
 		.until(webDriver -> (getText(cruise_line_placeholder).equals(cruiseLine)));
 		new WebDriverWait(driver, 2)
 		.until(webDriver -> (getText(cruise_ship_placeholder).equals(cruiseShip)));
-		
 		logger.log(Status.INFO, "Searched for cruise line: '" + cruiseLine
 				+ "' and cruise ship: '" + cruiseShip+"'");
 		log.info( "Searched for cruise line: '" + cruiseLine
 				+ "' and cruise ship: '" + cruiseShip+"'");
 	}
 
+	/************* Click on search button *************/
 	public void clickSearch() {
 		waitForDocumentReady(5);
 		log.debug("Clicking on search button");
@@ -98,6 +97,7 @@ public class CruisesPage extends BaseUI {
 		logger.log(Status.INFO, "Search for cruise completed");
 	}
 
+	/************* Check if ship dropdown is activated *************/
 	public boolean isShipDropdownActivated() {
 		boolean result;
 		log.debug("Checking if ship dropdown is activated");
@@ -110,6 +110,7 @@ public class CruisesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Check if specified ship is selected *************/
 	public boolean isShipSelected(String cruiseShip) {
 		boolean result;
 		log.debug("Checking if ship is selected");
@@ -124,6 +125,7 @@ public class CruisesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Check if ship line drop down is present *************/
 	public boolean isLineDropdownPresent() {
 		boolean result;
 		log.debug("Checking if line dropdown is activated");
@@ -138,6 +140,7 @@ public class CruisesPage extends BaseUI {
 
 	}
 
+	/************* Check if required line is selected *************/
 	public boolean isLineSelected(String cruiseLine) {
 		boolean result;
 		log.debug("Checking if line is selected");
@@ -153,6 +156,7 @@ public class CruisesPage extends BaseUI {
 
 	}
 
+	/************* Check if Search button is activated *************/
 	public boolean isSearchButtonActivated() {
 		boolean result;
 		log.debug("Getting window handles");

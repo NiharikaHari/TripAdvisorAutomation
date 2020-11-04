@@ -45,17 +45,21 @@ public class FileIO {
 		return prop;
 	}
 
-	/************** Get Test Data based on Test Name ****************/
+	/************** Get Test Data from excel sheet based on Test Name ****************/
 	public static HashMap<String, ArrayList<String>> readExcelData(
 			String testName) throws IOException {
+		
+		//Creating hashmap to store data
 		HashMap<String, ArrayList<String>> data = new HashMap<>();
-
+		
+		//Reading the excel sheet
 		read_file = new FileInputStream(System.getProperty("user.dir")
 				+ prop.getProperty("testData_path"));
 		workbook = new XSSFWorkbook(read_file);
 		worksheet = workbook.getSheet(testName);
+		
+		// Iterating over all cells in the sheet
 		Iterator<Row> rowIterator = worksheet.iterator();
-
 		ArrayList<String> rowData = new ArrayList<>();
 		rowIterator = worksheet.iterator();
 		int rowNum = 1;
@@ -67,6 +71,8 @@ public class FileIO {
 			if (row.getCell(0) == null) {
 				break;
 			}
+			
+			//Writing cell data to hashmap based on cell data type
 			rowData = new ArrayList<>();
 			while (cellIterator.hasNext()) {
 				Cell cell = cellIterator.next();
@@ -79,65 +85,83 @@ public class FileIO {
 			data.put("" + (rowNum), rowData);
 			rowNum++;
 		}
-
+		
+		//Closing FileInputStream and XSSFWorkbook
 		workbook.close();
 		read_file.close();
-
 		return data;
 	}
 
-	/************** Write to excel sheet ****************/
+	/************** Write a single dimensional array to excel sheet ****************/
 	public static void writeExcel(String[] data, String sheetName,
 			String heading) {
-
 		String[][] newData = new String[data.length][1];
 		String[] headings = new String[1];
-
 		headings[0] = heading;
 		for (int i = 0; i < data.length; ++i) {
 			newData[i][0] = data[i];
 		}
-
 		writeExcel(newData, sheetName, headings);
 	}
 
+	/************** Write a double dimensional array to excel sheet ****************/
 	public static void writeExcel(String[][] data, String sheetName,
 			String headings[]) {
 		String filePath = System.getProperty("user.dir") + "/TestOutput/Output-"+BaseUI.timestamp+".xlsx";
 		file = new File(filePath);
-
 		boolean fileExists = false;
-
 		try {
+			
+			//Checking if output excel file already exists
 			if (file.isFile()) {
+				
+				//Read existing excel workbook
 				read_file = new FileInputStream(file);
 				workbook = new XSSFWorkbook(read_file);
 				fileExists = true;
 			} else {
+				
+				//Create new excel workbook
 				workbook = new XSSFWorkbook();
 			}
 			int rowStart = 0;
+			
+			//Checking if sheet already exists
 			if (workbook.getSheet(sheetName) == null)
+				
+				//Creating new sheet, setting row start to first cell
 				worksheet = workbook.createSheet(sheetName);
 			else{
+				
+				//Getting required sheet, setting row to last empty cell
 				worksheet = workbook.getSheet(sheetName);
 				rowStart = worksheet.getLastRowNum()+2;
 			}
+			
+			//Setting headings for the output data
 			row = worksheet.createRow(rowStart);
 			for (int i = 0; i < data[0].length; ++i) {
 				row.createCell(i).setCellValue(headings[i]);
 			}
+			
+			//Writing data to the sheet
 			for (int i = 0; i < data.length; ++i) {
 				row = worksheet.createRow(i +rowStart+ 1);
 				for (int j = 0; j < data[0].length; ++j) {
 					row.createCell(j).setCellValue(data[i][j]);
 				}
 			}
+			
+			//Auto resize each column
 			for (int i = 0; i < data[0].length; ++i) {
 				worksheet.autoSizeColumn(i);
 			}
+			
+			//Writing workbook to required file
 			write_file = new FileOutputStream(filePath);
 			workbook.write(write_file);
+			
+			//Closing FileInputStream, FileOutputStream and XSSFWorkbook
 			write_file.close();
 			workbook.close();
 			if (fileExists)
@@ -147,6 +171,5 @@ public class FileIO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 }
