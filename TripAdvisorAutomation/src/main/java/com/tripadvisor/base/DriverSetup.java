@@ -13,6 +13,7 @@ public class DriverSetup {
 
 	private static WebDriver driver;
 
+	/********* Invoke Chrome Driver **********/
 	public static WebDriver getChromeDriver() {
 		String userDir = System.getProperty("user.dir");
 		System.setProperty("webdriver.chrome.driver", userDir
@@ -28,6 +29,7 @@ public class DriverSetup {
 		return driver;
 	}
 
+	/********* Invoke Firefox Driver **********/
 	public static WebDriver getFirefoxDriver() {
 		String userDir = System.getProperty("user.dir");
 		System.setProperty("webdriver.gecko.driver", userDir
@@ -42,6 +44,7 @@ public class DriverSetup {
 		return driver;
 	}
 
+	/********* Invoke MSEdge Driver **********/
 	public static WebDriver getMSEdgeDriver() {
 		String userDir = System.getProperty("user.dir");
 		System.setProperty("webdriver.edge.driver", userDir

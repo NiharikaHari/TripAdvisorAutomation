@@ -30,6 +30,7 @@ public class LocationResultsPage extends BaseUI {
 		log=LogManager.getLogger(com.tripadvisor.pages.LocationResultsPage.class);
 	}
 
+	/*********** Getting invalid location message ***********/
 	public String getInvalidLocationMsg() {
 		log.debug("Getting invalid location message");
 		String result = getText(invalid_location_msg);
@@ -38,6 +39,7 @@ public class LocationResultsPage extends BaseUI {
 		return result;
 	}
 
+	/*********** Clicking on first search result location ***********/
 	public void clickLocation() {
 		log.debug("Clicking on location");
 		clickOn(click_location, 10);
@@ -45,6 +47,7 @@ public class LocationResultsPage extends BaseUI {
 		logger.log(Status.INFO, "Clicked on location");
 	}
 
+	/*********** Clicking on 'Holiday Homes' button ***********/
 	public void clickHolidayHomes() {
 		log.debug("Clicking on Holiday Homes button");
 		clickOn(holiday_homes_btn, 10);
@@ -52,6 +55,7 @@ public class LocationResultsPage extends BaseUI {
 		logger.log(Status.INFO, "Clicked on Holiday Homes");
 	}
 	
+	/*********** Getting title of the current page ***********/
 	public String getTitle(){
 		log.debug("Getting title of location results page");
 		String title = driver.getTitle();

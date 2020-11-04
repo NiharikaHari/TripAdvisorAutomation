@@ -27,42 +27,44 @@ public class HolidayHomesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
-		if(browser_choice!=1 && browser_choice!=2 && browser_choice!=3)
-			browser_choice=getBrowserOption();
+		if (browser_choice != 1 && browser_choice != 2 && browser_choice != 3)
+			browser_choice = getBrowserOption();
 		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
 
-	/******** Verify message on entering non-existent location ********/
+	/******************************************************************
+	 ******** Verify message on entering non-existent location ********
+	 ******************************************************************/
 	@Test
 	public void invalidLocationTest() {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("dummylocation");
 		waitForDocumentReady(20);
-		LocationResultsPage locationResultsPage = new LocationResultsPage(
-				driver, logger);
+		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
 		String message = locationResultsPage.getInvalidLocationMsg();
 		driver.navigate().back();
-		Assert.assertEquals(message,
-				"Sorry, we couldn't find \"dummylocation\" worldwide");
+		Assert.assertEquals(message, "Sorry, we couldn't find \"dummylocation\" worldwide");
 	}
-	
-	/********* Verify title of the Location Results page *************/
+
+	/****************************************************************
+	 ********* Verify title of the Location Results page ************
+	 ****************************************************************/
 	@Test(dataProvider = "holidayHomesData", dependsOnMethods = "invalidLocationTest")
-	public void verifySearchLocationTitleTest(String location, String guestNo, String sortBy){
+	public void verifySearchLocationTitleTest(String location, String guestNo, String sortBy) {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation(location);
 		waitForDocumentReady(20);
-		LocationResultsPage locationResultsPage = new LocationResultsPage(
-				driver, logger);
-		Assert.assertEquals(locationResultsPage.getTitle(), "Search results: "+location+" - Tripadvisor");
+		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
+		Assert.assertEquals(locationResultsPage.getTitle(), "Search results: " + location + " - Tripadvisor");
 	}
 
-	/******** Verify the whole scenario for all valid options ********/
+	/******************************************************************
+	 ******** Verify the whole scenario for all valid options *********
+	 ******************************************************************/
 	@Test(dataProvider = "holidayHomesData", dependsOnMethods = "verifySearchLocationTitleTest")
 	public void holidayHomesTest(String location, String guestNo, String sortBy) {
-		LocationResultsPage locationResultsPage = new LocationResultsPage(
-				driver, logger);
+		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
 		locationResultsPage.clickLocation();
 		switchToNewTab();
 		waitForDocumentReady(20);
@@ -91,7 +93,9 @@ public class HolidayHomesTest extends BaseUI {
 		Assert.assertEquals(perNightPrices.length, 5);
 	}
 
-	/******** Verify Book Now button functionality on hotels page ********/
+	/*********************************************************************
+	 ******** Verify Book Now button functionality on hotels page ********
+	 *********************************************************************/
 	@Test(dependsOnMethods = "holidayHomesTest")
 	public void verifyBookNowTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
@@ -101,7 +105,9 @@ public class HolidayHomesTest extends BaseUI {
 		hotelPage.takeScreenshot();
 	}
 
-	/******** Verify desired check-in is present for first result ********/
+	/********************************************************************
+	 ******** Verify desired check-in is present for first result *******
+	 ********************************************************************/
 	@Test(dependsOnMethods = "verifyBookNowTest")
 	public void verifyHotelCheckInTest() {
 		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
@@ -109,16 +115,19 @@ public class HolidayHomesTest extends BaseUI {
 		Assert.assertTrue(verifyCheckin);
 	}
 
-	/******** Verify desired check-out is present for first result ********/
+	/**********************************************************************
+	 ******** Verify desired check-out is present for first result ********
+	 **********************************************************************/
 	@Test(dependsOnMethods = "verifyHotelCheckInTest")
 	public void verifyHotelCheckOutTest() {
 		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
-		boolean verifyCheckout = hotelPage.isCheckout(DateUtils
-				.getCheckOutDate());
+		boolean verifyCheckout = hotelPage.isCheckout(DateUtils.getCheckOutDate());
 		Assert.assertTrue(verifyCheckout);
 	}
 
-	/******** Verify desired no of guests is present for first result ********/
+	/*************************************************************************
+	 ******** Verify desired no of guests is present for first result ********
+	 *************************************************************************/
 	@Test(dependsOnMethods = "verifyHotelCheckOutTest", dataProvider = "holidayHomesData")
 	public void verifyHotelGuestsTest(String location, String guestNo, String sortBy) {
 		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
@@ -126,7 +135,9 @@ public class HolidayHomesTest extends BaseUI {
 		Assert.assertTrue(verifyGuests);
 	}
 
-	/******** Verify Elevator is present for first result ********/
+	/**************************************************************
+	 ******** Verify Elevator is present for first result *********
+	 **************************************************************/
 	@Test(dependsOnMethods = "verifyHotelGuestsTest")
 	public void verifyHotelElevatorTest() {
 		HotelInfoPage hotelPage = new HotelInfoPage(driver, logger);
@@ -135,7 +146,9 @@ public class HolidayHomesTest extends BaseUI {
 		Assert.assertTrue(verifyElevator);
 	}
 
-	/******** Verify Clear All Filters functionality ********/
+	/********************************************************
+	 ******** Verify Clear All Filters functionality ********
+	 ********************************************************/
 	@Test(dependsOnMethods = "verifyHotelElevatorTest")
 	public void clearAllFiltersTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
@@ -143,10 +156,10 @@ public class HolidayHomesTest extends BaseUI {
 		Assert.assertFalse(holidayHomesPage.isFilterPresent());
 	}
 
-	/********
+	/************************************************************************
 	 * Verify that Show Prices button is present when checkin and checkout is
 	 * not applied
-	 ********/
+	 ************************************************************************/
 	@Test(dependsOnMethods = "clearAllFiltersTest")
 	public void showPricesButtonTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
@@ -154,10 +167,10 @@ public class HolidayHomesTest extends BaseUI {
 		Assert.assertFalse(holidayHomesPage.isBookNowPresent());
 	}
 
-	/********
+	/*********************************************************************
 	 * Verify that Book Now button is present when checkin and checkout is
 	 * applied
-	 ********/
+	 *********************************************************************/
 	@Test(dependsOnMethods = "showPricesButtonTest")
 	public void bookNowButtonTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
@@ -168,31 +181,37 @@ public class HolidayHomesTest extends BaseUI {
 		Assert.assertFalse(holidayHomesPage.isShowPricesPresent());
 	}
 
-	/******** Verify that check-in date is selected for tomorrow ********/
+	/********************************************************************
+	 ******** Verify that check-in date is selected for tomorrow ********
+	 ********************************************************************/
 	@Test(dependsOnMethods = "bookNowButtonTest")
 	public void verifyCheckInSelectedTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		Assert.assertTrue(holidayHomesPage.verifyCheckIn());
 	}
 
-	/******** Verify that check-out date is selected for 5 days after check-in ********/
+	/*****************************************************************************
+	 ***** Verify that check-out date is selected for 5 days after check-in ******
+	 *****************************************************************************/
 	@Test(dependsOnMethods = "verifyCheckInSelectedTest")
 	public void verifyCheckOutSelectedTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		Assert.assertTrue(holidayHomesPage.verifyCheckOut());
 	}
 
-	/********
+	/****************************************************************************
 	 * Verify that check-in and out dates are correctly displayed under applied
 	 * filters
-	 ********/
+	 ****************************************************************************/
 	@Test(dependsOnMethods = "verifyCheckOutSelectedTest")
 	public void verifyCheckInOutFilterTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		Assert.assertTrue(holidayHomesPage.verifyCheckInOutFilter());
 	}
 
-	/******** Verify that Elevator amenity is present in filters ********/
+	/********************************************************************
+	 ******** Verify that Elevator amenity is present in filters ********
+	 ********************************************************************/
 	@Test(dependsOnMethods = "verifyCheckInOutFilterTest")
 	public void verifyElevatorFilterAppliedTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
@@ -200,17 +219,21 @@ public class HolidayHomesTest extends BaseUI {
 		Assert.assertTrue(holidayHomesPage.verifyElevatorSelected());
 	}
 
-	/******** Verify Past Date does not get selected ********/
+	/************************************************************
+	 ********* Verify Past Date does not get selected ***********
+	 ************************************************************/
 	@Test(dependsOnMethods = "verifyElevatorFilterAppliedTest")
 	public void verifyPastDateNotSelectedTest() {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		Assert.assertTrue(holidayHomesPage.isPastDateNotSelected());
 	}
 
+	/******************************************************
+	 ******** Data provider for Holiday Homes Data ******** 
+	 ******************************************************/
 	@DataProvider
 	public Object[][] holidayHomesData() throws IOException {
-		HashMap<String, ArrayList<String>> dataMap = FileIO
-				.readExcelData("HolidayHomesTest");
+		HashMap<String, ArrayList<String>> dataMap = FileIO.readExcelData("HolidayHomesTest");
 		int noRow = dataMap.size();
 		int noCol = dataMap.get("1").size();
 		Object[][] data = new Object[noRow][noCol];

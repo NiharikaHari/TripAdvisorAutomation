@@ -37,6 +37,7 @@ public class CruiseReviewsPage extends BaseUI {
 		log=LogManager.getLogger(com.tripadvisor.pages.CruiseReviewsPage.class);
 	}
 	
+	/************* Get title of the current page ***********/
 	public String getTitle(){
 		log.debug("Getting title of Cruises Reviews page");
 		String title = driver.getTitle();
@@ -44,6 +45,7 @@ public class CruiseReviewsPage extends BaseUI {
 		return title;
 	}
 
+	/************* Get Cruise Details from cruise page ************/
 	public String[] getCruiseDetails() {
 		log.debug("Getting number of passengers");
 		String pass = getText(no_of_passengers);
@@ -63,6 +65,7 @@ public class CruiseReviewsPage extends BaseUI {
 		return arr;
 	}
 
+	/************* Write Cruise Details to excel sheet ***********/
 	public void writeExcelCruiseDetails(String[] cruiseDetails,
 			String cruiseShip) {
 		log.debug("Writing cruise details to Excel: " + cruiseShip);
@@ -78,6 +81,7 @@ public class CruiseReviewsPage extends BaseUI {
 		log.info("Written cruise details to excel: " + cruiseShip);
 	}
 
+	/************* Write Cruise Languages List from cruise page ***********/
 	public void writeExcelLanguages(String[] languages, String cruiseShip) {
 		log.debug("Writing cruise languages list to Excel: " + cruiseShip);
 		String[][] data = new String[languages.length][2];
@@ -91,6 +95,7 @@ public class CruiseReviewsPage extends BaseUI {
 		log.info("Written cruise languages list to Excel: " + cruiseShip);
 	}
 
+	/************* Get Cruise Languages List from cruise page ***********/
 	public String[] getLanguagesList() {
 		List<WebElement> lang;
 		log.debug("Checking if 'More' button is present");

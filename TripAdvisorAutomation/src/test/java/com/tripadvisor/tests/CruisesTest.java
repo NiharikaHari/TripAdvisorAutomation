@@ -27,20 +27,21 @@ public class CruisesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
-		if(browser_choice!=1 && browser_choice!=2 && browser_choice!=3)
-			browser_choice=getBrowserOption();
+		if (browser_choice != 1 && browser_choice != 2 && browser_choice != 3)
+			browser_choice = getBrowserOption();
 		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
 
-	/******** Verify page title of cruises page ********/
+	/***************************************************
+	 ******** Verify page title of cruises page ********
+	 ***************************************************/
 	@Test
-	public void verifyCruisesPageTitleTest(){
+	public void verifyCruisesPageTitleTest() {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
 		waitForDocumentReady(20);
-		LocationResultsPage locationResultsPage = new LocationResultsPage(
-				driver, logger);
+		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
 		locationResultsPage.clickLocation();
 		switchToNewTab();
 		waitForDocumentReady(20);
@@ -49,24 +50,31 @@ public class CruisesTest extends BaseUI {
 		holidayHomesPage.clickCruise();
 		waitForDocumentReady(20);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
-		Assert.assertEquals(cruisesPage.getTitle(), "Cruises - Cheap Cruise Holidays: 2020 Destinations & Ports - Tripadvisor");
+		Assert.assertEquals(cruisesPage.getTitle(),
+				"Cruises - Cheap Cruise Holidays: 2020 Destinations & Ports - Tripadvisor");
 	}
-	
-	/******** Verify that search button is deactivated when cruise is not selected ********/
+
+	/******************************************************************************
+	 **** Verify that search button is deactivated when cruise is not selected ****
+	 ******************************************************************************/
 	@Test(dependsOnMethods = "verifyCruisesPageTitleTest")
 	public void verifySearchNotActivatedTest() {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		Assert.assertFalse(cruisesPage.isSearchButtonActivated());
 	}
 
-	/******** Verify that ship dropdown is not activated until line is selected ********/
+	/***************************************************************************
+	 **** Verify that ship dropdown is not activated until line is selected ****
+	 ***************************************************************************/
 	@Test(dependsOnMethods = "verifySearchNotActivatedTest")
 	public void verifyShipDropDownNotActivatedTest() {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		Assert.assertFalse(cruisesPage.isShipDropdownActivated());
 	}
 
-	/******** Verify that required cruise line and ship are selected ********/
+	/************************************************************************
+	 ******** Verify that required cruise line and ship are selected ********
+	 ************************************************************************/
 	@Test(dependsOnMethods = "verifyShipDropDownNotActivatedTest", dataProvider = "cruiseData")
 	public void verifyCruiseIsSelectedTest(String cruiseLine, String cruiseShip) {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
@@ -74,55 +82,35 @@ public class CruisesTest extends BaseUI {
 		Assert.assertTrue(cruisesPage.isLineSelected(cruiseLine));
 		Assert.assertTrue(cruisesPage.isShipSelected(cruiseShip));
 	}
-	
-	@Test(dependsOnMethods = "verifyShipDropDownNotActivatedTest", dataProvider = "cruiseData")
-	public void verifyCruiseShipPageTitleTest(String cruiseLine, String cruiseShip){
-		CruisesPage cruisesPage = new CruisesPage(driver, logger);
-		cruisesPage.searchCruise(cruiseLine, cruiseShip);
-		cruisesPage.clickSearch();
-		switchToNewTab();
-		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
-				logger);
-		waitForDocumentReady(20);
-		Assert.assertEquals(cruiseReviewPage.getTitle(), cruiseShip+" - Deck Plans, Reviews & Pictures - Tripadvisor");
-		switchToPrevTab();
-	}
 
-	/******** Verify that cruise ship details are extracted from particular cruise ********/
-	@Test(dependsOnMethods = "verifyCruiseShipPageTitleTest", dataProvider = "cruiseData")
+	/******************************************************************************
+	 **** Verify that cruise ship details are extracted from particular cruise ****
+	 ******************************************************************************/
+	@Test(dependsOnMethods = "verifyCruiseIsSelectedTest", dataProvider = "cruiseData") //
 	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 		cruisesPage.clickSearch();
 		switchToNewTab();
-		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
-				logger);
+		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver, logger);
+		Assert.assertEquals(cruiseReviewPage.getTitle(),
+				cruiseShip + " - Deck Plans, Reviews & Pictures - Tripadvisor");
 		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();
+		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();//
 		switchToPrevTab();
 		Assert.assertEquals(3, cruiseDetails.length);
+		Assert.assertTrue(cruiseLanguages.length > 0);//
 		cruiseReviewPage.writeExcelCruiseDetails(cruiseDetails, cruiseShip);
+		cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip); //
 
 	}
 
-	/******** Verify that cruise ship languages are extracted from particular cruise ********/
-	@Test(dependsOnMethods = "verifyCruiseShipPageTitleTest", dataProvider = "cruiseData")
-	public void cruiseLanguagesTest(String cruiseLine, String cruiseShip) {
-		CruisesPage cruisesPage = new CruisesPage(driver, logger);
-		cruisesPage.searchCruise(cruiseLine, cruiseShip);
-		cruisesPage.clickSearch();
-		switchToNewTab();
-		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver,
-				logger);
-		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
-		switchToPrevTab();
-		Assert.assertTrue(cruiseLanguages.length > 0);
-		cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip);
-	}
-
+	/**********************************************
+	 ******* Data Provider for cruise data ********
+	 **********************************************/
 	@DataProvider
 	public Object[][] cruiseData() throws IOException {
-		HashMap<String, ArrayList<String>> dataMap = FileIO
-				.readExcelData("CruisesTest");
+		HashMap<String, ArrayList<String>> dataMap = FileIO.readExcelData("CruisesTest");
 		int noRow = dataMap.size();
 		int noCol = dataMap.get("1").size();
 		Object[][] data = new Object[noRow][noCol];

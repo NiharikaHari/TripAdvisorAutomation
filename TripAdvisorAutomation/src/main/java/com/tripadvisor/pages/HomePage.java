@@ -30,6 +30,7 @@ public class HomePage extends BaseUI {
 		log=LogManager.getLogger(com.tripadvisor.pages.HomePage.class);
 	}
 
+	/************* Search for specified location **************/
 	public void searchHolidayHomesLocation(String location) {
 		log.debug("Clicking on Holiday Homes button");
 		clickOn(holiday_homes_btn, 20);

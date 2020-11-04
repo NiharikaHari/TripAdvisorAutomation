@@ -63,6 +63,7 @@ public class HolidayHomesPage extends BaseUI {
 				.getLogger(com.tripadvisor.pages.HolidayHomesPage.class);
 	}
 
+	/************* Set check-in date *************/
 	public void setCheckIn() {
 		log.debug("Clicking on check-in");
 		if (!isElementPresent(check_in_out_date_future, 1))
@@ -78,6 +79,7 @@ public class HolidayHomesPage extends BaseUI {
 		log.info("CheckIn date is entered");
 	}
 
+	/************* Set check-out date *************/
 	public void setCheckOut() {
 		log.debug("Clicking on check-out");
 		if (!isElementPresent(check_in_out_date_future, 1))
@@ -93,6 +95,7 @@ public class HolidayHomesPage extends BaseUI {
 		log.info("CheckOut date is entered");
 	}
 
+	/************* Set number of guests to specified number *************/
 	public void setGuests(int guestNo) {
 		log.debug("Clicking on guest button");
 		clickOn(guest_button, 20);
@@ -113,6 +116,7 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Number of guests is set to " + guestNo + "+");
 	}
 
+	/************* Click on Sort By button *************/
 	public void sortBy(String sortBy) {
 		log.debug("Clicking on Sort By dropdown");
 		clickAction(sort_dropdown, 10);
@@ -131,6 +135,7 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Sorted by " + sortBy);
 	}
 
+	/************* Click on Lift amenity *************/
 	public void selectLift() {
 		log.debug("Clicking on 'More' amenities");
 		clickOn(more_amenities, 20);
@@ -141,6 +146,7 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Selected Elevator/Lift Amenity");
 	}
 
+	/************* Wait for hotels information to get updated *************/
 	public void waitForHotelsLoaded() {
 		log.debug("Waiting for hotels to get updated");
 		new WebDriverWait(driver, 10).until(webDriver -> ((getText(hotel_match)
@@ -148,6 +154,7 @@ public class HolidayHomesPage extends BaseUI {
 		log.info("Hotels have been updated");
 	}
 
+	/************* Get hotel names of top 5 hotels *************/
 	public String[] getHotelNames() {
 		log.debug("Getting names of top 5 hotels");
 		String[] hotel_names = new String[5];
@@ -160,6 +167,7 @@ public class HolidayHomesPage extends BaseUI {
 		return hotel_names;
 	}
 
+	/************* Get total price for top 5 hotels *************/
 	public String[] getTotalPrices() {
 		log.debug("Getting total price of top 5 hotels");
 		String[] total_prices = new String[5];
@@ -173,6 +181,7 @@ public class HolidayHomesPage extends BaseUI {
 		return total_prices;
 	}
 
+	/************* Get price per night for top 5 hotels *************/
 	public String[] getPerNightPrices() {
 		log.debug("Getting price per night of top 5 hotels");
 		String[] night_price = new String[5];
@@ -186,6 +195,7 @@ public class HolidayHomesPage extends BaseUI {
 		return night_price;
 	}
 
+	/************* Click on 'Cruises' button *************/
 	public void clickCruise() {
 		log.debug("Clicking on 'Cruises' button");
 		clickOn(cruises, 20);
@@ -193,6 +203,7 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Clicked on 'Cruises' button");
 	}
 
+	/************* Click on 'Clear Filters' button *************/
 	public void clickClearFilters() {
 		log.debug("Clicking on 'Clear Filters' button");
 		clickAction(clear_filter, 20);
@@ -200,6 +211,7 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Clicked on 'Clear Filters' button");
 	}
 
+	/************* Check if any filters are present *************/
 	public boolean isFilterPresent() {
 		boolean result;
 		log.debug("Getting number of applied filters");
@@ -214,6 +226,7 @@ public class HolidayHomesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Click on 'Book Now' button *************/
 	public void clickBookNow() {
 		log.debug("Clicking on 'Book Now' button");
 		clickAction(book_now, 10);
@@ -221,6 +234,7 @@ public class HolidayHomesPage extends BaseUI {
 		logger.log(Status.INFO, "Clicked on 'Book Now' button");
 	}
 
+	/************* Check if past date is getting selected *************/
 	public boolean isPastDateNotSelected() {
 		log.debug("Clicking on check-in calendar");
 		if (!isElementPresent(check_in_out_date_future, 1))
@@ -235,6 +249,7 @@ public class HolidayHomesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Checking if check-in date is set to tomorrow *************/
 	public boolean verifyCheckIn() {
 		boolean result = true;
 		log.debug("Checking if check-in date is set to tomorrow");
@@ -248,6 +263,7 @@ public class HolidayHomesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Checking if check-out date is set to 5 days after tomorrow *************/
 	public boolean verifyCheckOut() {
 		boolean result = true;
 		log.debug("Checking if check-out date is set to 5 days after tomorrow");
@@ -261,6 +277,7 @@ public class HolidayHomesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Checking if elevator filter is present *************/
 	public boolean verifyElevatorSelected() {
 		boolean result;
 		log.debug("Finding number of filters applied");
@@ -274,6 +291,7 @@ public class HolidayHomesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Checking if 'Show Price' button is present *************/
 	public boolean isShowPricesPresent() {
 		boolean result;
 		log.debug("Checking if 'Show Price' button is present");
@@ -286,6 +304,7 @@ public class HolidayHomesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Checking if 'Book Now' button is present *************/
 	public boolean isBookNowPresent() {
 		boolean result;
 		log.debug("Checking if 'Book Now' button is present");
@@ -298,6 +317,7 @@ public class HolidayHomesPage extends BaseUI {
 		return result;
 	}
 
+	/************* Checking if check-in and check-out is correct in filters *************/
 	public boolean verifyCheckInOutFilter() {
 		boolean result;
 		log.debug("Checking if check-in and check-out is correct in filters");
