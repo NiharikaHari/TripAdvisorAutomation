@@ -16,8 +16,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.tripadvisor.base.BaseUI;
-
 public class FileIO {
 
 	private static FileInputStream read_file;
@@ -107,7 +105,7 @@ public class FileIO {
 	/************** Write a double dimensional array to excel sheet ****************/
 	public static void writeExcel(String[][] data, String sheetName,
 			String headings[]) {
-		String filePath = System.getProperty("user.dir") + "/TestOutput/Output-"+BaseUI.timestamp+".xlsx";
+		String filePath = System.getProperty("user.dir") + "/TestOutput/Output.xlsx";
 		file = new File(filePath);
 		boolean fileExists = false;
 		try {

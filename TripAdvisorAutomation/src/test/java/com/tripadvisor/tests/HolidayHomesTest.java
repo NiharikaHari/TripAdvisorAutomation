@@ -27,8 +27,6 @@ public class HolidayHomesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
-		if (browser_choice != 1 && browser_choice != 2 && browser_choice != 3)
-			browser_choice = getBrowserOption();
 		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
@@ -40,7 +38,7 @@ public class HolidayHomesTest extends BaseUI {
 	public void invalidLocationTest() {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("dummylocation");
-		waitForDocumentReady(20);
+		waitForDocumentReady(30);
 		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
 		String message = locationResultsPage.getInvalidLocationMsg();
 		driver.navigate().back();
@@ -54,7 +52,7 @@ public class HolidayHomesTest extends BaseUI {
 	public void verifySearchLocationTitleTest(String location, String guestNo, String sortBy) {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation(location);
-		waitForDocumentReady(20);
+		waitForDocumentReady(30);
 		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
 		Assert.assertEquals(locationResultsPage.getTitle(), "Search results: " + location + " - Tripadvisor");
 	}
@@ -67,10 +65,10 @@ public class HolidayHomesTest extends BaseUI {
 		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
 		locationResultsPage.clickLocation();
 		switchToNewTab();
-		waitForDocumentReady(20);
+		waitForDocumentReady(30);
 		locationResultsPage.clickHolidayHomes();
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
-		waitForDocumentReady(20);
+		waitForDocumentReady(30);
 		holidayHomesPage.sortBy(sortBy);
 		holidayHomesPage.setCheckIn();
 		holidayHomesPage.setCheckOut();
@@ -176,7 +174,7 @@ public class HolidayHomesTest extends BaseUI {
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		holidayHomesPage.setCheckIn();
 		holidayHomesPage.setCheckOut();
-		waitForDocumentReady(10);
+		waitForDocumentReady(30);
 		Assert.assertTrue(holidayHomesPage.isBookNowPresent());
 		Assert.assertFalse(holidayHomesPage.isShowPricesPresent());
 	}

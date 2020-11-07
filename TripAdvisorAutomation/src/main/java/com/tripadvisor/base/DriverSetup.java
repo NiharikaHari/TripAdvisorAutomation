@@ -25,7 +25,7 @@ public class DriverSetup {
 		co.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
 		driver = new ChromeDriver(co);
 		driver.manage().window().maximize();
-		driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(180, TimeUnit.SECONDS);
 		return driver;
 	}
 
@@ -40,7 +40,7 @@ public class DriverSetup {
 		fo.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
 		driver = new FirefoxDriver(fo);
 		driver.manage().window().maximize();
-		driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(180, TimeUnit.SECONDS);
 		return driver;
 	}
 
@@ -51,7 +51,7 @@ public class DriverSetup {
 				+ BaseUI.prop.getProperty("msedgeDriver"));
 		driver = new EdgeDriver();
 		driver.manage().window().maximize();
-		driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(180, TimeUnit.SECONDS);
 		return driver;
 	}
 

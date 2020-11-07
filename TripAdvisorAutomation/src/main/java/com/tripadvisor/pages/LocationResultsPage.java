@@ -42,7 +42,7 @@ public class LocationResultsPage extends BaseUI {
 	/*********** Clicking on first search result location ***********/
 	public void clickLocation() {
 		log.debug("Clicking on location");
-		clickOn(click_location, 10);
+		clickOn(click_location, 30);
 		log.info("Clicked on location");
 		logger.log(Status.INFO, "Clicked on location");
 	}
@@ -50,7 +50,7 @@ public class LocationResultsPage extends BaseUI {
 	/*********** Clicking on 'Holiday Homes' button ***********/
 	public void clickHolidayHomes() {
 		log.debug("Clicking on Holiday Homes button");
-		clickOn(holiday_homes_btn, 10);
+		clickOn(holiday_homes_btn, 30);
 		log.info("Clicked on Holiday Homes button");
 		logger.log(Status.INFO, "Clicked on Holiday Homes");
 	}

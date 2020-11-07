@@ -38,10 +38,10 @@ public class BaseUI {
 	public static ExtentReports report;
 	public static ExtentTest logger;
 	public static Properties prop;
-	public static int browser_choice;
+	public static String browser_choice;
 	public static String timestamp = DateUtils.getTimeStamp();
 	public static Logger log;
-	public static Logger logBase = LogManager
+	private static final Logger logBase = LogManager
 			.getLogger(com.tripadvisor.base.BaseUI.class);
 
 	public BaseUI() {
@@ -51,18 +51,20 @@ public class BaseUI {
 	/************** Invoke Browser ****************/
 	public static WebDriver invokeBrowser() {
 		logBase.debug("Opening browser");
+		browser_choice = prop.getProperty("browserName");
 		try {
-			if (browser_choice == 1) {
-				driver = DriverSetup.getChromeDriver();
-			} else if (browser_choice == 2) {
-				driver = DriverSetup.getMSEdgeDriver();
-			} else {
+			if (browser_choice.equalsIgnoreCase("firefox")) {
 				driver = DriverSetup.getFirefoxDriver();
+			} else if (browser_choice.equalsIgnoreCase("msedge")) {
+				driver = DriverSetup.getMSEdgeDriver();
+			} else if (browser_choice.equalsIgnoreCase("chrome")){
+				driver = DriverSetup.getChromeDriver();
+			} else{
+				throw new Exception("Invalid browser name provided in property file");
 			}
 			logBase.info("Opened browser");
 		} catch (Exception e) {
-			e.printStackTrace();
-			logBase.error("Failed to open browser");
+			logBase.error("Failed to open browser: "+e.getMessage());
 			reportFail(e.getMessage());
 		}
 
@@ -134,8 +136,7 @@ public class BaseUI {
 	public static List<WebElement> getListOfElements(By locator) {
 		List<WebElement> list = null;
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 20);
-			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+			new WebDriverWait(driver, 30).until(ExpectedConditions.presenceOfElementLocated(locator));
 		} catch (NoSuchElementException e) {
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -149,8 +150,7 @@ public class BaseUI {
 	/************** Check if an element is present ****************/
 	public static boolean isElementPresent(By locator, int timeout) {
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, timeout);
-			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+			new WebDriverWait(driver, timeout).until(ExpectedConditions.presenceOfElementLocated(locator));
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -160,8 +160,7 @@ public class BaseUI {
 	/************** Send text to an element ****************/
 	public static void sendText(By locator, String text) {
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 20);
-			wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+			new WebDriverWait(driver, 30).until(ExpectedConditions.presenceOfElementLocated(locator));
 			driver.findElement(locator).sendKeys(text);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -235,8 +234,7 @@ public class BaseUI {
 	/************** Switch to another frame ****************/
 	public void switchToFrame(By locator) {
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 20);
-			wait.until(ExpectedConditions
+			new WebDriverWait(driver, 30).until(ExpectedConditions
 					.frameToBeAvailableAndSwitchToIt(locator));
 		} catch (Exception e) {
 			e.printStackTrace();

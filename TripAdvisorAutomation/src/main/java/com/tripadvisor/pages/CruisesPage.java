@@ -51,7 +51,7 @@ public class CruisesPage extends BaseUI {
 	public void searchCruise(String cruiseLine, String cruiseShip) {
 		driver.navigate().refresh();
 		log.debug("Clicking on cruise line dropdown");
-		clickOn(line_dropdown, 10);
+		clickAction(line_dropdown, 20);
 		log.info("Clicked on cruise line dropdown");
 		log.debug("Getting list of cruise line options");
 		List<WebElement> line_options = getListOfElements(cruise_line_options);
@@ -65,7 +65,7 @@ public class CruisesPage extends BaseUI {
 		}
 		log.info("Clicked on '"+cruiseLine+"' option");
 		log.debug("Clicking on cruise ship dropdown");
-		clickOn(ship_dropdown, 10);
+		clickOn(ship_dropdown, 20);
 		log.info("Clicked on cruise ship dropdown");
 		log.debug("Getting list of cruise ship options");
 		List<WebElement> ship_options = getListOfElements(cruise_ship_options);
@@ -92,7 +92,7 @@ public class CruisesPage extends BaseUI {
 	public void clickSearch() {
 		waitForDocumentReady(5);
 		log.debug("Clicking on search button");
-		clickOn(search_button, 10);
+		clickOn(search_button, 20);
 		log.info("Clicked on search button");
 		logger.log(Status.INFO, "Search for cruise completed");
 	}
