@@ -1,6 +1,7 @@
 package com.tripadvisor.base;
 
 import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -24,8 +25,9 @@ public class DriverSetup {
 		co.addArguments("--disable-gpu");
 		co.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
 		driver = new ChromeDriver(co);
+//		driver.manage().window().setSize(new Dimension(1280, 1024));
 		driver.manage().window().maximize();
-		driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(180, TimeUnit.SECONDS);
 		return driver;
 	}
 
@@ -39,8 +41,9 @@ public class DriverSetup {
 		fo.addArguments("--disable-notifications");
 		fo.setUnhandledPromptBehaviour(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
 		driver = new FirefoxDriver(fo);
+//		driver.manage().window().setSize(new Dimension(1280, 1024));
 		driver.manage().window().maximize();
-		driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(180, TimeUnit.SECONDS);
 		return driver;
 	}
 
@@ -50,8 +53,9 @@ public class DriverSetup {
 		System.setProperty("webdriver.edge.driver", userDir
 				+ BaseUI.prop.getProperty("msedgeDriver"));
 		driver = new EdgeDriver();
+//		driver.manage().window().setSize(new Dimension(1280, 1024));
 		driver.manage().window().maximize();
-		driver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(180, TimeUnit.SECONDS);
 		return driver;
 	}
 

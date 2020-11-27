@@ -99,7 +99,7 @@ public class CruiseReviewsPage extends BaseUI {
 	public String[] getLanguagesList() {
 		List<WebElement> lang;
 		log.debug("Checking if 'More' button is present");
-		if (isElementPresent(more, 3)) {
+		if (isElementPresent(more, 5)) {
 			log.debug("Clicking on 'more' button");
 			clickOn(more, 10);
 			log.info("Clicked on 'more' button");

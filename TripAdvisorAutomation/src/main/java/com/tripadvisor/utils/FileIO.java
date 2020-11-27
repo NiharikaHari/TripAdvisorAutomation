@@ -54,20 +54,20 @@ public class FileIO {
 		
 		//Reading the excel sheet
 		read_file = new FileInputStream(System.getProperty("user.dir")
-				+ prop.getProperty("testData_path"));
+				+ prop.getProperty("testData_path"));						
 		workbook = new XSSFWorkbook(read_file);
 		worksheet = workbook.getSheet(testName);
 		
 		// Iterating over all cells in the sheet
-		Iterator<Row> rowIterator = worksheet.iterator();
+		Iterator<Row> rowIterator;
 		ArrayList<String> rowData = new ArrayList<>();
 		rowIterator = worksheet.iterator();
-		int rowNum = 1;
+		int rowNum = 1;//"1": {..}
 		if (rowIterator.hasNext())
 			row = rowIterator.next();
 		while (rowIterator.hasNext()) {
 			row = rowIterator.next();
-			Iterator<Cell> cellIterator = row.iterator();
+			Iterator<Cell> cellIterator = row.iterator(); 
 			if (row.getCell(0) == null) {
 				break;
 			}

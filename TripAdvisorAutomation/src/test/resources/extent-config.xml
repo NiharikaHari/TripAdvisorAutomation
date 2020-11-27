@@ -14,29 +14,14 @@
         <protocol>https</protocol>
         
         <!-- title of the document -->
-        <documentTitle>Extent</documentTitle>
+        <documentTitle>TripAdvisor Test Project</documentTitle>
         
         <!-- report name - displayed at top-nav -->
-        <reportName>Automation Report</reportName>
+        <reportName>Trip Advisor Functional Test Automation Report</reportName>
         
         <!-- location of charts in the test view -->
         <!-- top, bottom -->
-        <testViewChartLocation>bottom</testViewChartLocation>
-		
-        <!-- custom javascript -->
-        <scripts>
-            <![CDATA[
-                $(document).ready(function() {
-                    
-                });
-            ]]>
-        </scripts>
-        
-        <!-- custom styles -->
-        <styles>
-            <![CDATA[
-                
-            ]]>
-        </styles>
+        <testViewChartLocation>top</testViewChartLocation>
+	
     </configuration>
 </extentreports>

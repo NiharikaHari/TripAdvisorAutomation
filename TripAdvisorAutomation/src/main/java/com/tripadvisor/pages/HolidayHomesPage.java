@@ -1,12 +1,15 @@
 package com.tripadvisor.pages;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -83,7 +86,7 @@ public class HolidayHomesPage extends BaseUI {
 	public void setCheckOut() {
 		log.debug("Clicking on check-out");
 		if (!isElementPresent(check_in_out_date_future, 1))
-			clickOn(check_out, 20);
+			clickOn(check_out, 30);
 		log.info("Clicked on check-out");
 		log.debug("Getting list of all future dates from calendar");
 		List<WebElement> dates = getListOfElements(check_in_out_date_future);
@@ -98,7 +101,7 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Set number of guests to specified number *************/
 	public void setGuests(int guestNo) {
 		log.debug("Clicking on guest button");
-		clickOn(guest_button, 20);
+		clickOn(guest_button, 30);
 		log.info("Clicked on guest button");
 		String num;
 		log.debug("Setting number of guests to: " + guestNo);
@@ -106,12 +109,12 @@ public class HolidayHomesPage extends BaseUI {
 			num = driver.findElement(guest_number).getAttribute("value");
 			int guest_num = Integer.parseInt(num.substring(0, 1));
 			if (guest_num < guestNo) {
-				clickOn(guest_add, 20);
+				clickOn(guest_add, 30);
 			} else {
 				break;
 			}
 		}
-		clickOn(apply_button, 20);
+		clickOn(apply_button, 30);
 		log.debug("Number of guests is set to " + guestNo + "+");
 		logger.log(Status.INFO, "Number of guests is set to " + guestNo + "+");
 	}
@@ -119,7 +122,7 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Click on Sort By button *************/
 	public void sortBy(String sortBy) {
 		log.debug("Clicking on Sort By dropdown");
-		clickAction(sort_dropdown, 10);
+		clickAction(sort_dropdown, 30);
 		log.info("Clicked on Sort By dropdown");
 		log.debug("Get list of sorting options");
 		List<WebElement> sortOptions = getListOfElements(sort_by_options);
@@ -138,10 +141,10 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Click on Lift amenity *************/
 	public void selectLift() {
 		log.debug("Clicking on 'More' amenities");
-		clickOn(more_amenities, 20);
+		clickOn(more_amenities, 30);
 		log.info("Clicked on 'More' amenities");
 		log.debug("Clicking on Elevator/Lift Access option");
-		clickAction(elevator, 10);
+		clickAction(elevator, 30);
 		log.info("Clicked on Elevator/Lift Access option");
 		logger.log(Status.INFO, "Selected Elevator/Lift Amenity");
 	}
@@ -149,7 +152,11 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Wait for hotels information to get updated *************/
 	public void waitForHotelsLoaded() {
 		log.debug("Waiting for hotels to get updated");
-		new WebDriverWait(driver, 10).until(webDriver -> ((getText(hotel_match)
+		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
+				.withTimeout(Duration.ofSeconds(30))
+				.pollingEvery(Duration.ofMillis(500))
+				.ignoring(StaleElementReferenceException.class);
+		wait.until(webDriver -> ((getText(hotel_match)
 				.contains("Lift"))));
 		log.info("Hotels have been updated");
 	}
@@ -198,7 +205,7 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Click on 'Cruises' button *************/
 	public void clickCruise() {
 		log.debug("Clicking on 'Cruises' button");
-		clickOn(cruises, 20);
+		clickOn(cruises, 30);
 		log.info("Clicked on 'Cruises' button");
 		logger.log(Status.INFO, "Clicked on 'Cruises' button");
 	}
@@ -206,7 +213,7 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Click on 'Clear Filters' button *************/
 	public void clickClearFilters() {
 		log.debug("Clicking on 'Clear Filters' button");
-		clickAction(clear_filter, 20);
+		clickAction(clear_filter, 30);
 		log.info("Clicked on 'Clear Filters' button");
 		logger.log(Status.INFO, "Clicked on 'Clear Filters' button");
 	}
@@ -229,7 +236,7 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Click on 'Book Now' button *************/
 	public void clickBookNow() {
 		log.debug("Clicking on 'Book Now' button");
-		clickAction(book_now, 10);
+		clickAction(book_now, 30);
 		log.info("Clicked on 'Book Now' button");
 		logger.log(Status.INFO, "Clicked on 'Book Now' button");
 	}
@@ -237,11 +244,11 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Check if past date is getting selected *************/
 	public boolean isPastDateNotSelected() {
 		log.debug("Clicking on check-in calendar");
-		if (!isElementPresent(check_in_out_date_future, 1))
-			clickOn(check_in, 20);
+		if (!isElementPresent(check_in_out_date_future, 3))
+			clickOn(check_in, 30);
 		log.info("Clicked on check-in calendar");
 		log.debug("Clicking on past date");
-		clickOn(check_in_out_date_past, 10);
+		clickOn(check_in_out_date_past, 30);
 		log.info("Clicked on past date");
 		boolean result = isElementPresent(check_in_out_date_future, 1);
 		logger.log(Status.INFO, "Is past date not selected: " + result);
@@ -295,7 +302,7 @@ public class HolidayHomesPage extends BaseUI {
 	public boolean isShowPricesPresent() {
 		boolean result;
 		log.debug("Checking if 'Show Price' button is present");
-		if (isElementPresent(show_price, 2))
+		if (isElementPresent(show_price, 10))
 			result = true;
 		else
 			result = false;
@@ -308,7 +315,7 @@ public class HolidayHomesPage extends BaseUI {
 	public boolean isBookNowPresent() {
 		boolean result;
 		log.debug("Checking if 'Book Now' button is present");
-		if (isElementPresent(book_now, 2))
+		if (isElementPresent(book_now, 10))
 			result = true;
 		else
 			result = false;

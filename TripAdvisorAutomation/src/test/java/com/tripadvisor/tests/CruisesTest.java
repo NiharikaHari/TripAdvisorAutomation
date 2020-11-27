@@ -27,8 +27,6 @@ public class CruisesTest extends BaseUI {
 
 	@BeforeClass
 	public void setUp() {
-		if (browser_choice != 1 && browser_choice != 2 && browser_choice != 3)
-			browser_choice = getBrowserOption();
 		driver = invokeBrowser();
 		openBrowser("websiteURL");
 	}
@@ -40,15 +38,15 @@ public class CruisesTest extends BaseUI {
 	public void verifyCruisesPageTitleTest() {
 		HomePage homePage = new HomePage(driver, logger);
 		homePage.searchHolidayHomesLocation("Nairobi");
-		waitForDocumentReady(20);
+		waitForDocumentReady(30);
 		LocationResultsPage locationResultsPage = new LocationResultsPage(driver, logger);
 		locationResultsPage.clickLocation();
 		switchToNewTab();
-		waitForDocumentReady(20);
+		waitForDocumentReady(30);
 		locationResultsPage.clickHolidayHomes();
 		HolidayHomesPage holidayHomesPage = new HolidayHomesPage(driver, logger);
 		holidayHomesPage.clickCruise();
-		waitForDocumentReady(20);
+		waitForDocumentReady(30);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		Assert.assertEquals(cruisesPage.getTitle(),
 				"Cruises - Cheap Cruise Holidays: 2020 Destinations & Ports - Tripadvisor");
@@ -86,23 +84,24 @@ public class CruisesTest extends BaseUI {
 	/******************************************************************************
 	 **** Verify that cruise ship details are extracted from particular cruise ****
 	 ******************************************************************************/
-	@Test(dependsOnMethods = "verifyCruiseIsSelectedTest", dataProvider = "cruiseData") //
+	@Test(dependsOnMethods = "verifyCruiseIsSelectedTest", dataProvider = "cruiseData") 
 	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 		cruisesPage.clickSearch();
 		switchToNewTab();
 		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver, logger);
+		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();
+		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
 		Assert.assertEquals(cruiseReviewPage.getTitle(),
 				cruiseShip + " - Deck Plans, Reviews & Pictures - Tripadvisor");
-		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();
-		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();//
 		switchToPrevTab();
+		driver.navigate().refresh();
 		Assert.assertEquals(3, cruiseDetails.length);
-		Assert.assertTrue(cruiseLanguages.length > 0);//
+		Assert.assertTrue(cruiseLanguages.length > 0);
 		cruiseReviewPage.writeExcelCruiseDetails(cruiseDetails, cruiseShip);
-		cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip); //
-
+		cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip); 
+		
 	}
 
 	/**********************************************
