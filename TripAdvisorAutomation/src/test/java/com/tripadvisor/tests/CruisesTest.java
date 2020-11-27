@@ -84,23 +84,24 @@ public class CruisesTest extends BaseUI {
 	/******************************************************************************
 	 **** Verify that cruise ship details are extracted from particular cruise ****
 	 ******************************************************************************/
-	@Test(dependsOnMethods = "verifyCruiseIsSelectedTest", dataProvider = "cruiseData") //
+	@Test(dependsOnMethods = "verifyCruiseIsSelectedTest", dataProvider = "cruiseData") 
 	public void cruiseDetailsTest(String cruiseLine, String cruiseShip) {
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		cruisesPage.searchCruise(cruiseLine, cruiseShip);
 		cruisesPage.clickSearch();
 		switchToNewTab();
 		CruiseReviewsPage cruiseReviewPage = new CruiseReviewsPage(driver, logger);
+		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();
+		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();
 		Assert.assertEquals(cruiseReviewPage.getTitle(),
 				cruiseShip + " - Deck Plans, Reviews & Pictures - Tripadvisor");
-		String[] cruiseDetails = cruiseReviewPage.getCruiseDetails();
-		String[] cruiseLanguages = cruiseReviewPage.getLanguagesList();//
 		switchToPrevTab();
+		driver.navigate().refresh();
 		Assert.assertEquals(3, cruiseDetails.length);
-		Assert.assertTrue(cruiseLanguages.length > 0);//
+		Assert.assertTrue(cruiseLanguages.length > 0);
 		cruiseReviewPage.writeExcelCruiseDetails(cruiseDetails, cruiseShip);
-		cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip); //
-
+		cruiseReviewPage.writeExcelLanguages(cruiseLanguages, cruiseShip); 
+		
 	}
 
 	/**********************************************

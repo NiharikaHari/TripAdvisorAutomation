@@ -49,9 +49,8 @@ public class CruisesPage extends BaseUI {
 
 	/*********** Search for cruise line and cruise ship ***********/
 	public void searchCruise(String cruiseLine, String cruiseShip) {
-		driver.navigate().refresh();
 		log.debug("Clicking on cruise line dropdown");
-		clickAction(line_dropdown, 20);
+		clickOn(line_dropdown, 20);
 		log.info("Clicked on cruise line dropdown");
 		log.debug("Getting list of cruise line options");
 		List<WebElement> line_options = getListOfElements(cruise_line_options);
@@ -87,6 +86,9 @@ public class CruisesPage extends BaseUI {
 		log.info( "Searched for cruise line: '" + cruiseLine
 				+ "' and cruise ship: '" + cruiseShip+"'");
 	}
+	
+	
+	
 
 	/************* Click on search button *************/
 	public void clickSearch() {
@@ -95,6 +97,7 @@ public class CruisesPage extends BaseUI {
 		clickOn(search_button, 20);
 		log.info("Clicked on search button");
 		logger.log(Status.INFO, "Search for cruise completed");
+		
 	}
 
 	/************* Check if ship dropdown is activated *************/

@@ -2,12 +2,10 @@ package com.tripadvisor.base;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.function.Function;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -21,8 +19,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
@@ -108,9 +104,11 @@ public class BaseUI {
 	/************** Switch to new tab ****************/
 	public static void switchToNewTab() {
 		try {
+			log.debug("Switching to new tab");
 			ArrayList<String> tabs = new ArrayList<String>(
 					driver.getWindowHandles());
 			driver.switchTo().window(tabs.get(tabs.size() - 1));
+			log.info("Switched to new tab");
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("Failed to switch to new tab");
@@ -173,8 +171,8 @@ public class BaseUI {
 	public static String getText(By locator) {
 		String text = null;
 		try {
-			WebElement element = fluentWait(locator, 20);
-			text = element.getText();
+			new WebDriverWait(driver, 30).until(ExpectedConditions.presenceOfElementLocated(locator));
+			text = driver.findElement(locator).getText();
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("Failed to get text from element");
@@ -255,19 +253,6 @@ public class BaseUI {
 			log.error("Failed to wait for document to be ready");
 			reportFail(e.getMessage());
 		}
-	}
-
-	/************** Fluent wait for NoSuchElementFound Exception **************/
-	public static WebElement fluentWait(By locator, int timeout) {
-		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
-				.withTimeout(Duration.ofSeconds(timeout))
-				.pollingEvery(Duration.ofMillis(500))
-				.ignoring(NoSuchElementException.class);
-		return wait.until(new Function<WebDriver, WebElement>() {
-			public WebElement apply(WebDriver driver) {
-				return driver.findElement(locator);
-			}
-		});
 	}
 
 	/**************** Get By locator using locator key ****************/

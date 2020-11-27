@@ -18,7 +18,7 @@ public class DateUtils {
 	    String date = String.valueOf(cal.get(Calendar.DATE));
 	    if(date.length()==1){
 	    	date = "0"+date;
-	    }
+	    }//1-10-2020 //01-10-2020
 	    String month = String.valueOf(cal.get(Calendar.MONTH)+1);   
 	    String year = String.valueOf(cal.get(Calendar.YEAR)).substring(2);   	    
 		return new String[]{date, month, year};

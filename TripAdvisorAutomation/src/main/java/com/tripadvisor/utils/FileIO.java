@@ -16,6 +16,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.tripadvisor.base.BaseUI;
+
 public class FileIO {
 
 	private static FileInputStream read_file;
@@ -52,20 +54,20 @@ public class FileIO {
 		
 		//Reading the excel sheet
 		read_file = new FileInputStream(System.getProperty("user.dir")
-				+ prop.getProperty("testData_path"));
+				+ prop.getProperty("testData_path"));						
 		workbook = new XSSFWorkbook(read_file);
 		worksheet = workbook.getSheet(testName);
 		
 		// Iterating over all cells in the sheet
-		Iterator<Row> rowIterator = worksheet.iterator();
+		Iterator<Row> rowIterator;
 		ArrayList<String> rowData = new ArrayList<>();
 		rowIterator = worksheet.iterator();
-		int rowNum = 1;
+		int rowNum = 1;//"1": {..}
 		if (rowIterator.hasNext())
 			row = rowIterator.next();
 		while (rowIterator.hasNext()) {
 			row = rowIterator.next();
-			Iterator<Cell> cellIterator = row.iterator();
+			Iterator<Cell> cellIterator = row.iterator(); 
 			if (row.getCell(0) == null) {
 				break;
 			}
@@ -105,7 +107,7 @@ public class FileIO {
 	/************** Write a double dimensional array to excel sheet ****************/
 	public static void writeExcel(String[][] data, String sheetName,
 			String headings[]) {
-		String filePath = System.getProperty("user.dir") + "/TestOutput/Output.xlsx";
+		String filePath = System.getProperty("user.dir") + "/TestOutput/Output-"+BaseUI.timestamp+".xlsx";
 		file = new File(filePath);
 		boolean fileExists = false;
 		try {

@@ -1,12 +1,15 @@
 package com.tripadvisor.pages;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -149,7 +152,11 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Wait for hotels information to get updated *************/
 	public void waitForHotelsLoaded() {
 		log.debug("Waiting for hotels to get updated");
-		new WebDriverWait(driver, 30).until(webDriver -> ((getText(hotel_match)
+		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
+				.withTimeout(Duration.ofSeconds(30))
+				.pollingEvery(Duration.ofMillis(500))
+				.ignoring(StaleElementReferenceException.class);
+		wait.until(webDriver -> ((getText(hotel_match)
 				.contains("Lift"))));
 		log.info("Hotels have been updated");
 	}
@@ -237,7 +244,7 @@ public class HolidayHomesPage extends BaseUI {
 	/************* Check if past date is getting selected *************/
 	public boolean isPastDateNotSelected() {
 		log.debug("Clicking on check-in calendar");
-		if (!isElementPresent(check_in_out_date_future, 1))
+		if (!isElementPresent(check_in_out_date_future, 3))
 			clickOn(check_in, 30);
 		log.info("Clicked on check-in calendar");
 		log.debug("Clicking on past date");
@@ -295,7 +302,7 @@ public class HolidayHomesPage extends BaseUI {
 	public boolean isShowPricesPresent() {
 		boolean result;
 		log.debug("Checking if 'Show Price' button is present");
-		if (isElementPresent(show_price, 2))
+		if (isElementPresent(show_price, 10))
 			result = true;
 		else
 			result = false;
@@ -308,7 +315,7 @@ public class HolidayHomesPage extends BaseUI {
 	public boolean isBookNowPresent() {
 		boolean result;
 		log.debug("Checking if 'Book Now' button is present");
-		if (isElementPresent(book_now, 2))
+		if (isElementPresent(book_now, 10))
 			result = true;
 		else
 			result = false;
