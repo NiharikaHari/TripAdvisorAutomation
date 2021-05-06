@@ -49,7 +49,7 @@ public class CruisesTest extends BaseUI {
 		waitForDocumentReady(30);
 		CruisesPage cruisesPage = new CruisesPage(driver, logger);
 		Assert.assertEquals(cruisesPage.getTitle(),
-				"Cruises - Cheap Cruise Holidays: 2020 Destinations & Ports - Tripadvisor");
+				"Cruises - Cheap Cruise Holidays: 2021 Destinations & Ports - Tripadvisor");
 	}
 
 	/******************************************************************************
