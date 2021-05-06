@@ -18,13 +18,13 @@ public class CruisesPage extends BaseUI {
 	public ExtentTest logger;
 	public WebDriver driver;
 	
-	By line_dropdown = getLocator("lineDropdown_id");
+	By line_dropdown = getLocator("lineDropdown_xpath");
 	By cruise_line_options = getLocator("cruiseLineOptions_xpath");
 	By ship_dropdown = getLocator("shipDropdown_xpath");
 	By cruise_ship_options = getLocator("cruiseShipOptions_xpath");
 	By search_button = getLocator("searchButton_xpath");
 	By cruise_ship_placeholder = getLocator("cruiseShipPlaceholder_xpath");
-	By cruise_line_placeholder = getLocator("cruiseLinePlaceholder_id");
+	By cruise_line_placeholder = getLocator("cruiseLinePlaceholder_xpath");
 
 	public CruisesPage() {
 	}
@@ -104,7 +104,8 @@ public class CruisesPage extends BaseUI {
 	public boolean isShipDropdownActivated() {
 		boolean result;
 		log.debug("Checking if ship dropdown is activated");
-		if (isElementPresent(ship_dropdown, 1))
+		clickOn(ship_dropdown, 10);
+		if (isElementPresent(cruise_ship_options, 1))
 			result = true;
 		else
 			result = false;

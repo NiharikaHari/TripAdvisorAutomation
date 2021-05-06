@@ -48,6 +48,7 @@ public class HotelInfoPage extends BaseUI {
 			result = false;
 		log.info("Is Checkin date correct: " + result);
 		logger.log(Status.INFO, "Is Checkin date correct: " + result);
+		logger.log(Status.INFO, "Expected "+dateMonth[0]+"/"+dateMonth[1]+" but got "+date[0]+"/"+date[1]);
 		return result;
 	}
 
