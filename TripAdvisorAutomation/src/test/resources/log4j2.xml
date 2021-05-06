@@ -20,6 +20,7 @@
 	<Loggers>
 		<Root level="trace" additivity="false">
 			<AppenderRef ref="FileAppender" />
+			<AppenderRef ref="ConsoleAppender" />
 		</Root>
 	</Loggers>
 <!-- 
